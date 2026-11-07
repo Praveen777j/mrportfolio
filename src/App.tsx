@@ -1,512 +1,563 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  Sparkles,
-  Phone,
+  HERO_CONTENT,
+  ABOUT_CONTENT,
+  EDUCATION_CONTENT,
+  EXPERIENCE_CONTENT,
+  CERTIFICATIONS_CONTENT,
+  PORTFOLIO_ITEMS,
+  WORK_CATEGORIES,
+  SKILLS_CONTENT,
+  CONTACT_CONTENT,
+  PortfolioItem
+} from './content';
+
+import {
   Mail,
+  Phone,
   MapPin,
   Download,
   ArrowRight,
   ArrowLeft,
   X,
   Menu,
-  Check,
+  Sparkles,
+  Instagram,
+  Linkedin,
+  MessageCircle,
+  TrendingUp,
   Video,
-  Layers
+  Camera,
+  Wrench,
+  Award,
+  CheckCircle2
 } from 'lucide-react';
 
-interface PortfolioItem {
-  id: string;
-  title: string;
-  category: string;
-  fileName: string;
-}
-
-const PORTFOLIO_ITEMS: PortfolioItem[] = [
-  { id: 'social-stories', title: 'Instagram Story Designs', category: 'Social Media', fileName: 'images/story-designs.jpg' },
-  { id: 'social-feed', title: 'Instagram Feed Posts', category: 'Social Media', fileName: 'images/feed-posts.jpg' },
-  { id: 'photo-product', title: 'Product', category: 'Photography', fileName: 'images/product.jpg' },
-  { id: 'photo-lifestyle', title: 'Lifestyle', category: 'Photography', fileName: 'images/lifestyle.jpg' },
-  { id: 'photo-event', title: 'Event', category: 'Photography', fileName: 'images/event.jpg' },
-  { id: 'photo-food', title: 'Food', category: 'Photography', fileName: 'images/food.jpg' },
-  { id: 'photo-nature', title: 'Nature', category: 'Photography', fileName: 'images/nature.jpg' },
-  { id: 'photo-sunset-1', title: 'Sunset Series I', category: 'Photography', fileName: 'images/sunset-1.jpg' },
-  { id: 'photo-sunset-2', title: 'Sunset Series II', category: 'Photography', fileName: 'images/sunset-2.jpg' },
-  { id: 'photo-kedarnath', title: 'Kedarnath Uttarakhand', category: 'Photography', fileName: 'images/kedarnath.jpg' },
-  { id: 'adobe-logo', title: 'Logo Design - Sip Glitz', category: 'Adobe Projects', fileName: 'images/logo-sip-glitz.jpg' },
-  { id: 'adobe-visiting-card', title: 'Visiting Card', category: 'Adobe Projects', fileName: 'images/visiting-card.jpg' },
-  { id: 'adobe-poster', title: 'Poster', category: 'Adobe Projects', fileName: 'images/poster.jpg' },
-  { id: 'adobe-brochure-front', title: 'Brochure Front', category: 'Adobe Projects', fileName: 'images/brochure-front.jpg' },
-  { id: 'adobe-brochure-back', title: 'Brochure Back', category: 'Adobe Projects', fileName: 'images/brochure-back.jpg' },
-  { id: 'adobe-software-fonts', title: 'Software & Fonts Used', category: 'Adobe Projects', fileName: 'images/software-fonts.jpg' },
-  { id: 'brand-indima-spices', title: 'Indima Homemade Spices Price List', category: 'Brand', fileName: 'images/indima-pricelist.jpg' }
-];
-
-const CATEGORIES = ['All', 'Social Media', 'Photography', 'Adobe Projects', 'Brand'] as const;
-
-const SKILLS = [
-  'Social Media Management',
-  'Content Creation',
-  'Photo & Video Editing',
-  'Canva Design',
-  'MS Excel',
-  'Digital Marketing Fundamentals',
-  'Communication',
-  'Creativity',
-  'Teamwork',
-  'Time Management'
-];
-
-const TAGLINE_PHRASES = [
-  'Social Media Marketer',
-  'Content Creator',
-  'Canva Designer'
-];
-
 export default function App() {
-  // Navigation & UI States
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string>('All');
-  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
-  const [scrollProgress, setScrollProgress] = useState(0);
+  const [activeModalItem, setActiveModalItem] = useState<PortfolioItem | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Typing effect state
-  const [currentPhraseIdx, setCurrentPhraseIdx] = useState(0);
-  const [displayedText, setDisplayedText] = useState('');
-  const [isDeleting, setIsDeleting] = useState(false);
+  // Filtered portfolio list
+  const filteredPortfolio = PORTFOLIO_ITEMS.filter((item) => {
+    if (activeCategory === 'All') return true;
+    return item.category === activeCategory;
+  });
 
-  // Parallax stack refs
-  const stackRef = useRef<HTMLDivElement>(null);
-  const [mouseOffset, setMouseOffset] = useState({ x: 0, y: 0 });
-
-  // Touch swipe refs for lightbox
-  const touchStartRef = useRef(0);
-  const touchEndRef = useRef(0);
-
-  // Filtered portfolio
-  const filteredItems = useMemo(() => {
-    if (activeCategory === 'All') return PORTFOLIO_ITEMS;
-    return PORTFOLIO_ITEMS.filter((item) => item.category === activeCategory);
-  }, [activeCategory]);
-
-  // Typing rotator logic
-  useEffect(() => {
-    const fullText = TAGLINE_PHRASES[currentPhraseIdx];
-    let timeout: NodeJS.Timeout;
-
-    if (!isDeleting && displayedText !== fullText) {
-      timeout = setTimeout(() => {
-        setDisplayedText(fullText.slice(0, displayedText.length + 1));
-      }, 90);
-    } else if (!isDeleting && displayedText === fullText) {
-      timeout = setTimeout(() => {
-        setIsDeleting(true);
-      }, 2000);
-    } else if (isDeleting && displayedText !== '') {
-      timeout = setTimeout(() => {
-        setDisplayedText(fullText.slice(0, displayedText.length - 1));
-      }, 45);
-    } else if (isDeleting && displayedText === '') {
-      setIsDeleting(false);
-      setCurrentPhraseIdx((prev) => (prev + 1) % TAGLINE_PHRASES.length);
-      timeout = setTimeout(() => {}, 400);
-    }
-
-    return () => clearTimeout(timeout);
-  }, [displayedText, isDeleting, currentPhraseIdx]);
-
-  // Scroll Progress listener
-  useEffect(() => {
-    const handleScroll = () => {
-      const total = document.documentElement.scrollHeight - window.innerHeight;
-      const current = window.scrollY;
-      setScrollProgress(total > 0 ? (current / total) * 100 : 0);
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Parallax handler
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      const x = (e.clientX / window.innerWidth - 0.5) * 2;
-      const y = (e.clientY / window.innerHeight - 0.5) * 2;
-      setMouseOffset({ x, y });
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
-
-  // Lightbox keyboard controls
+  // Keyboard navigation for Modal
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (lightboxIndex === null) return;
-      if (e.key === 'Escape') setLightboxIndex(null);
-      if (e.key === 'ArrowLeft') {
-        setLightboxIndex((prev) => (prev !== null ? (prev - 1 + filteredItems.length) % filteredItems.length : null));
-      }
-      if (e.key === 'ArrowRight') {
-        setLightboxIndex((prev) => (prev !== null ? (prev + 1) % filteredItems.length : null));
+      if (!activeModalItem) return;
+      if (e.key === 'Escape') {
+        setActiveModalItem(null);
+      } else if (e.key === 'ArrowRight') {
+        const currentIndex = filteredPortfolio.findIndex((item) => item.id === activeModalItem.id);
+        if (currentIndex !== -1) {
+          const nextIndex = (currentIndex + 1) % filteredPortfolio.length;
+          setActiveModalItem(filteredPortfolio[nextIndex]);
+        }
+      } else if (e.key === 'ArrowLeft') {
+        const currentIndex = filteredPortfolio.findIndex((item) => item.id === activeModalItem.id);
+        if (currentIndex !== -1) {
+          const prevIndex = (currentIndex - 1 + filteredPortfolio.length) % filteredPortfolio.length;
+          setActiveModalItem(filteredPortfolio[prevIndex]);
+        }
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [lightboxIndex, filteredItems.length]);
+  }, [activeModalItem, filteredPortfolio]);
 
-  // Lock body scroll when lightbox or mobile menu is open
+  // Lock body scroll when Modal or Mobile Menu is open
   useEffect(() => {
-    if (lightboxIndex !== null || mobileMenuOpen) {
+    if (activeModalItem || mobileMenuOpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
     }
-  }, [lightboxIndex, mobileMenuOpen]);
+  }, [activeModalItem, mobileMenuOpen]);
 
-  // Touch swipe handlers
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartRef.current = e.changedTouches[0].screenX;
-  };
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    touchEndRef.current = e.changedTouches[0].screenX;
-    const diff = touchEndRef.current - touchStartRef.current;
-    if (diff < -45) {
-      // Swiped Left -> Next
-      setLightboxIndex((prev) => (prev !== null ? (prev + 1) % filteredItems.length : null));
-    } else if (diff > 45) {
-      // Swiped Right -> Prev
-      setLightboxIndex((prev) => (prev !== null ? (prev - 1 + filteredItems.length) % filteredItems.length : null));
+  // Helper to resolve icon components safely
+  const renderIcon = (name: string, className = "w-6 h-6") => {
+    switch (name) {
+      case 'Video':
+        return <Video className={className} />;
+      case 'TrendingUp':
+        return <TrendingUp className={className} />;
+      case 'Camera':
+        return <Camera className={className} />;
+      case 'Wrench':
+        return <Wrench className={className} />;
+      default:
+        return <Sparkles className={className} />;
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#0E0E12] text-[#F5F5F7] relative selection:bg-[#FF4D8D] selection:text-white">
-      {/* Grain Texture */}
-      <div className="grain-overlay" aria-hidden="true" />
-
-      {/* Scroll Progress Bar */}
-      <div
-        className="scroll-progress-bar"
-        style={{ width: `${scrollProgress}%` }}
-        aria-hidden="true"
-      />
-
-      {/* Ambient Blurred Glowing Blobs */}
-      <div className="ambient-blob blob-1" aria-hidden="true" />
-      <div className="ambient-blob blob-2" aria-hidden="true" />
-      <div className="ambient-blob blob-3" aria-hidden="true" />
-      <div className="ambient-blob blob-4" aria-hidden="true" />
-
-      {/* Sticky Top Navigation */}
-      <header className="sticky top-0 z-50 bg-[#0E0E12]/85 backdrop-blur-md border-b border-white/10">
-        <div className="max-w-[1240px] mx-auto px-5 md:px-9 flex items-center justify-between h-[76px]">
-          {/* Brand */}
-          <a href="#hero" className="flex items-center gap-3 font-display text-xl font-bold tracking-tight text-white">
-            <span className="w-8 h-8 rounded-lg bg-gradient-to-tr from-[#FF4D8D] to-[#8B5CF6] flex items-center justify-center text-white text-sm font-black shadow-[0_0_15px_rgba(255,77,141,0.4)]">
+    <div className="min-h-screen bg-[#FFF8F0] text-[#1B1B1F] selection:bg-[#FF5C39] selection:text-white">
+      {/* ==========================================================================
+           STICKY NAVBAR (Cream Background, Anchor Links & Resume Button)
+           ========================================================================== */}
+      <header className="sticky top-0 z-40 bg-[#FFF8F0]/92 backdrop-blur-md border-b border-[#EADFD3] w-full">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 h-[76px] flex items-center justify-between gap-6">
+          {/* Brand Wordmark with 6px radius */}
+          <a
+            href="#hero"
+            className="flex items-center gap-2.5 font-display text-xl font-bold text-[#1B1B1F] shrink-0"
+          >
+            <span className="w-8 h-8 rounded-[var(--radius)] bg-[#FF5C39] text-white flex items-center justify-center font-black text-sm border border-[#1B1B1F]">
               P
             </span>
             <span>Poonam MR</span>
           </a>
 
           {/* Desktop Nav Links */}
-          <nav className="hidden md:flex items-center gap-8 text-sm font-semibold text-[#9E9EA8]">
-            <a href="#about" className="hover:text-white transition-colors">About</a>
-            <a href="#work" className="hover:text-white transition-colors">Selected Work</a>
-            <a href="#experience" className="hover:text-white transition-colors">Experience</a>
-            <a href="#skills" className="hover:text-white transition-colors">Skills</a>
-            <a href="#education" className="hover:text-white transition-colors">Education</a>
-            <a href="#contact" className="hover:text-white transition-colors">Contact</a>
+          <nav className="hidden md:flex items-center gap-7 text-sm font-semibold text-[#5A5A66]">
+            <a href="#about" className="hover:text-[#FF5C39] transition-colors">About</a>
+            <a href="#education" className="hover:text-[#FF5C39] transition-colors">Education</a>
+            <a href="#experience" className="hover:text-[#FF5C39] transition-colors">Experience</a>
+            <a href="#work" className="hover:text-[#FF5C39] transition-colors">Work</a>
+            <a href="#skills" className="hover:text-[#FF5C39] transition-colors">Skills & Tools</a>
+            <a href="#contact" className="hover:text-[#FF5C39] transition-colors">Contact</a>
           </nav>
 
-          {/* Action CTA */}
-          <div className="hidden md:flex items-center gap-4">
-            <a href="#contact" className="btn btn-primary">
-              Hire Me
+          {/* Primary Action Button */}
+          <div className="hidden md:flex items-center gap-3 shrink-0">
+            <a
+              href={CONTACT_CONTENT.resumeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              download={CONTACT_CONTENT.resumeFileName}
+              className="btn-primary py-2.5 px-5 text-sm"
+            >
+              <Download size={16} />
+              Resume
             </a>
           </div>
 
-          {/* Mobile Menu Toggle */}
+          {/* Mobile Menu Hamburger */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden flex items-center justify-center w-11 h-11 rounded-xl bg-white/5 border border-white/10 text-white"
+            className="md:hidden w-11 h-11 rounded-[var(--radius)] bg-white border border-[#EADFD3] flex items-center justify-center text-[#1B1B1F]"
             aria-label="Toggle navigation menu"
             aria-expanded={mobileMenuOpen}
           >
-            {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
 
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
-          <div className="md:hidden fixed top-[76px] inset-x-0 bg-[#0E0E12]/98 backdrop-blur-2xl border-b border-white/10 p-6 z-40">
-            <nav className="flex flex-col gap-4 text-lg font-semibold text-[#9E9EA8] mb-6">
-              <a href="#about" onClick={() => setMobileMenuOpen(false)} className="py-2 border-b border-white/5 hover:text-white">About</a>
-              <a href="#work" onClick={() => setMobileMenuOpen(false)} className="py-2 border-b border-white/5 hover:text-white">Selected Work</a>
-              <a href="#experience" onClick={() => setMobileMenuOpen(false)} className="py-2 border-b border-white/5 hover:text-white">Experience</a>
-              <a href="#skills" onClick={() => setMobileMenuOpen(false)} className="py-2 border-b border-white/5 hover:text-white">Skills</a>
-              <a href="#education" onClick={() => setMobileMenuOpen(false)} className="py-2 border-b border-white/5 hover:text-white">Education</a>
-              <a href="#contact" onClick={() => setMobileMenuOpen(false)} className="py-2 border-b border-white/5 hover:text-white">Contact</a>
+          <div className="md:hidden fixed top-[76px] inset-x-0 bg-[#FFF8F0]/98 backdrop-blur-xl border-b border-[#EADFD3] p-6 z-50 shadow-xl">
+            <nav className="flex flex-col gap-3 text-lg font-bold text-[#1B1B1F] mb-6">
+              <a href="#about" onClick={() => setMobileMenuOpen(false)} className="py-2 border-b border-[#EADFD3]/50">About</a>
+              <a href="#education" onClick={() => setMobileMenuOpen(false)} className="py-2 border-b border-[#EADFD3]/50">Education</a>
+              <a href="#experience" onClick={() => setMobileMenuOpen(false)} className="py-2 border-b border-[#EADFD3]/50">Experience</a>
+              <a href="#work" onClick={() => setMobileMenuOpen(false)} className="py-2 border-b border-[#EADFD3]/50">Work</a>
+              <a href="#skills" onClick={() => setMobileMenuOpen(false)} className="py-2 border-b border-[#EADFD3]/50">Skills & Tools</a>
+              <a href="#contact" onClick={() => setMobileMenuOpen(false)} className="py-2 border-b border-[#EADFD3]/50">Contact</a>
             </nav>
             <div className="flex flex-col gap-3">
-              <a href="#contact" onClick={() => setMobileMenuOpen(false)} className="btn btn-primary text-center">Hire Me</a>
-              <a href="resume.pdf" download="Poonam_MR_Resume.pdf" className="btn btn-secondary text-center">Download Resume</a>
+              <a
+                href={CONTACT_CONTENT.resumeUrl}
+                download={CONTACT_CONTENT.resumeFileName}
+                className="btn-primary text-center justify-center"
+              >
+                <Download size={18} />
+                Download Resume
+              </a>
+              <a href="#contact" onClick={() => setMobileMenuOpen(false)} className="btn-secondary text-center justify-center">
+                Contact Me
+              </a>
             </div>
           </div>
         )}
       </header>
 
-      <main>
+      <main className="w-full">
         {/* ==========================================================================
-             1. HERO SECTION
+             1. HERO SECTION (Cream Background #FFF8F0, >=96px vertical padding)
              ========================================================================== */}
-        <section id="hero" className="relative pt-16 pb-24 md:pt-24 md:pb-32 min-h-[85vh] flex items-center">
-          <div className="max-w-[1240px] mx-auto px-5 md:px-9 w-full">
-            <div className="grid grid-cols-1 lg:grid-cols-[1.15fr_0.85fr] gap-12 lg:gap-16 items-center">
-              {/* Left Column */}
-              <div>
-                <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-bold text-[#9E9EA8] mb-6 shadow-sm">
-                  <span className="w-2 h-2 rounded-full bg-[#10B981] shadow-[0_0_10px_#10B981]" />
-                  <span>Available for Internships</span>
-                  <span className="text-white/20">·</span>
-                  <span className="text-[#FF4D8D]">Bangalore</span>
+        <section id="hero" className="section-cream section-padding border-b border-[#EADFD3]">
+          <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+              
+              {/* Left Column: Headline, Personality Badge & Buttons (7 Cols) */}
+              <div className="lg:col-span-7 flex flex-col items-start">
+                
+                {/* Friendly Sticker-style Rotated Badge (6px radius) */}
+                <div className="mb-6">
+                  <span className="sticker-badge">
+                    <span className="w-2 h-2 rounded-full bg-[#1B1B1F] animate-pulse" />
+                    {HERO_CONTENT.statusBadgeText} · {HERO_CONTENT.statusLocation}
+                  </span>
                 </div>
 
-                <h1 className="font-display text-5xl sm:text-7xl lg:text-8xl font-black tracking-tight leading-[1.02] text-white mb-5">
-                  Poonam <span className="font-serif-accent">MR</span>
+                {/* Main Headline with Thick Coral Underline on "actually engage" */}
+                <h1 className="heading-fluid text-[#1B1B1F] mb-6">
+                  {HERO_CONTENT.headlineStart}
+                  <span className="underline-coral text-[#FF5C39]">
+                    {HERO_CONTENT.headlineKeyWord}
+                  </span>
+                  {HERO_CONTENT.headlineEnd}
                 </h1>
 
-                <div className="text-xl sm:text-2xl font-bold text-[#FFD84D] h-10 flex items-center mb-6">
-                  <span>{displayedText}</span>
-                  <span className="typing-cursor" aria-hidden="true" />
-                </div>
-
-                <p className="text-base sm:text-lg text-[#9E9EA8] leading-relaxed max-w-xl mb-9">
-                  Creative and motivated BBA student with internship experience in social media marketing, content creation and Canva designing. Eager to learn, grow and build a career in marketing and business.
+                {/* Subline */}
+                <p className="text-lg sm:text-xl text-[#5A5A66] font-medium leading-relaxed mb-8 max-w-xl">
+                  {HERO_CONTENT.subline}
                 </p>
 
-                <div className="flex flex-wrap gap-4">
-                  <a href="#work" className="btn btn-primary">
-                    See My Work
+                {/* Buttons: "See my work" and "Download resume" */}
+                <div className="flex flex-wrap items-center gap-4">
+                  <a href="#work" className="btn-primary">
+                    {HERO_CONTENT.primaryCtaText}
                     <ArrowRight size={18} />
                   </a>
-                  <a href="#contact" className="btn btn-secondary">
-                    Hire Me
-                  </a>
-                  <a href="resume.pdf" target="_blank" rel="noopener noreferrer" download="Poonam_MR_Resume.pdf" className="btn btn-glow-yellow">
+                  <a
+                    href={CONTACT_CONTENT.resumeUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    download={CONTACT_CONTENT.resumeFileName}
+                    className="btn-secondary"
+                  >
                     <Download size={18} />
-                    Resume
+                    {HERO_CONTENT.secondaryCtaText}
                   </a>
                 </div>
               </div>
 
-              {/* Right Column: 3D Mouse Parallax Tilted Work Cards Stack */}
-              <div className="relative w-full max-w-[420px] h-[440px] mx-auto" ref={stackRef}>
-                {/* Card 1 */}
-                <div
-                  className="stack-card stack-card-1"
-                  style={{
-                    transform: `translate(${mouseOffset.x * 12}px, ${mouseOffset.y * 12}px) rotate(-10deg)`,
-                  }}
-                >
-                  <img
-                    src="images/feed-posts.jpg"
-                    alt="Instagram Feed Posts preview"
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                  />
-                  <span className="stack-badge">Social Media</span>
-                </div>
+              {/* Right Column: Small Hero Bento Cluster of 4 Tiles (5 Cols) */}
+              <div className="lg:col-span-5 w-full">
+                <div className="grid grid-cols-2 gap-4 auto-rows-[160px] sm:auto-rows-[185px]">
+                  
+                  {/* Hero Tile 1: Best Image 1 (Feed Posts) */}
+                  <div
+                    className="bento-card-light !p-0 overflow-hidden cursor-pointer group"
+                    onClick={() => {
+                      const found = PORTFOLIO_ITEMS.find((p) => p.id === 'social-feed');
+                      if (found) setActiveModalItem(found);
+                    }}
+                    title="Click to view Instagram Feed Campaign"
+                  >
+                    <div className="relative w-full h-full">
+                      <img
+                        src={HERO_CONTENT.heroFeatureImages[0].src}
+                        alt="Instagram Feed Campaign"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        loading="eager"
+                      />
+                      <div className="absolute inset-x-0 bottom-0 p-3.5 bg-gradient-to-t from-[#1B1B1F]/90 via-[#1B1B1F]/40 to-transparent flex flex-col justify-end">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-[#D9F76B]">
+                          {HERO_CONTENT.heroFeatureImages[0].tag}
+                        </span>
+                        <span className="font-display text-sm font-bold text-white leading-tight">
+                          {HERO_CONTENT.heroFeatureImages[0].title}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
 
-                {/* Card 2 */}
-                <div
-                  className="stack-card stack-card-2"
-                  style={{
-                    transform: `translate(${mouseOffset.x * -16}px, ${mouseOffset.y * -16}px) rotate(8deg)`,
-                  }}
-                >
-                  <img
-                    src="images/poster.jpg"
-                    alt="Poster Design preview"
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                  />
-                  <span className="stack-badge">Adobe Poster</span>
-                </div>
+                  {/* Hero Tile 2: Best Image 2 (Story Designs) */}
+                  <div
+                    className="bento-card-light !p-0 overflow-hidden cursor-pointer group"
+                    onClick={() => {
+                      const found = PORTFOLIO_ITEMS.find((p) => p.id === 'social-stories');
+                      if (found) setActiveModalItem(found);
+                    }}
+                    title="Click to view Story Concepts"
+                  >
+                    <div className="relative w-full h-full">
+                      <img
+                        src={HERO_CONTENT.heroFeatureImages[1].src}
+                        alt="Instagram Story Designs"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        loading="eager"
+                      />
+                      <div className="absolute inset-x-0 bottom-0 p-3.5 bg-gradient-to-t from-[#1B1B1F]/90 via-[#1B1B1F]/40 to-transparent flex flex-col justify-end">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-[#D9F76B]">
+                          {HERO_CONTENT.heroFeatureImages[1].tag}
+                        </span>
+                        <span className="font-display text-sm font-bold text-white leading-tight">
+                          {HERO_CONTENT.heroFeatureImages[1].title}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
 
-                {/* Card 3 */}
-                <div
-                  className="stack-card stack-card-3"
-                  style={{
-                    transform: `translate(${mouseOffset.x * 20}px, ${mouseOffset.y * 20}px) rotate(-3deg)`,
-                  }}
-                >
-                  <img
-                    src="images/food.jpg"
-                    alt="Food Photography preview"
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                  />
-                  <span className="stack-badge">Photography</span>
+                  {/* Hero Tile 3: Status Badge Tile (Lime Highlight #D9F76B) */}
+                  <div className="bento-card-light bg-[#D9F76B] border-[#1B1B1F] flex flex-col justify-between">
+                    <div className="flex items-center justify-between">
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#1B1B1F]" />
+                      <Sparkles size={16} className="text-[#1B1B1F]" />
+                    </div>
+                    <div>
+                      <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#1B1B1F]/70 block mb-0.5">
+                        Availability
+                      </span>
+                      <h3 className="font-display text-base font-bold text-[#1B1B1F] leading-tight">
+                        {HERO_CONTENT.statusBadgeText}
+                      </h3>
+                      <p className="text-xs text-[#1B1B1F]/80 font-medium mt-0.5">
+                        Bangalore / Hybrid
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Hero Tile 4: 3 Skill Chips Tile */}
+                  <div className="bento-card-light flex flex-col justify-between">
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#FF5C39]">
+                      Core Capabilities
+                    </span>
+                    <div className="flex flex-col gap-1.5">
+                      {HERO_CONTENT.heroSkillChips.map((chip, i) => (
+                        <span
+                          key={i}
+                          className="text-xs font-semibold px-2.5 py-1 rounded-[var(--radius)] bg-[#FFF8F0] border border-[#EADFD3] text-[#1B1B1F] truncate"
+                        >
+                          {chip}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
                 </div>
               </div>
+
             </div>
           </div>
         </section>
 
         {/* ==========================================================================
-             2. MARQUEE STRIP
+             2. ABOUT SECTION (White Background #FFFFFF, >=96px vertical padding)
              ========================================================================== */}
-        <div className="marquee-container" aria-hidden="true">
-          <div className="marquee-content">
-            <span>Social Media <span className="marquee-star">✦</span> Canva <span className="marquee-star">✦</span> Reels <span className="marquee-star">✦</span> Captions <span className="marquee-star">✦</span> Photography <span className="marquee-star">✦</span> Branding <span className="marquee-star">✦</span> Video Editing <span className="marquee-star">✦</span></span>
-            <span>Social Media <span className="marquee-star">✦</span> Canva <span className="marquee-star">✦</span> Reels <span className="marquee-star">✦</span> Captions <span className="marquee-star">✦</span> Photography <span className="marquee-star">✦</span> Branding <span className="marquee-star">✦</span> Video Editing <span className="marquee-star">✦</span></span>
-          </div>
-        </div>
-
-        {/* ==========================================================================
-             3. ABOUT BENTO GRID
-             ========================================================================== */}
-        <section id="about" className="section-pad">
-          <div className="max-w-[1240px] mx-auto px-5 md:px-9">
-            <div className="mb-12">
-              <span className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-[#FF4D8D] mb-3">
-                <span className="w-2 h-2 rounded-full bg-[#FF4D8D] shadow-[0_0_8px_#FF4D8D]" />
-                The Creative Mind
-              </span>
-              <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white">
-                About <span className="font-serif-accent">Poonam</span>
-              </h2>
-              <p className="text-[#9E9EA8] max-w-xl text-base sm:text-lg mt-3">
-                A multidisciplinary marketer focused on aesthetics, campaign execution, and audience storytelling.
-              </p>
+        <section id="about" className="section-white section-padding border-b border-[#EADFD3]">
+          <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+            
+            {/* Section Label */}
+            <div className="section-badge-coral">
+              <span>{ABOUT_CONTENT.sectionLabel}</span>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-              {/* Tile 1: Wide Bio */}
-              <div className="glass-card md:col-span-2 p-8 sm:p-10 flex flex-col justify-between">
-                <div>
-                  <span className="text-xs font-extrabold uppercase tracking-widest text-[#FF4D8D] mb-4 block">
-                    Vision & Drive
-                  </span>
-                  <h3 className="font-display text-2xl sm:text-3xl font-extrabold text-white leading-snug mb-4">
-                    Creative and motivated BBA student with internship experience in social media marketing, content creation and Canva designing.
-                  </h3>
-                  <p className="text-[#9E9EA8] text-base leading-relaxed">
-                    Eager to learn, grow and build a career in marketing and business. Proven record of managing brand social media schedules, producing high-impact Reels, editing product photography, and designing promotional collateral.
-                  </p>
-                </div>
-              </div>
+            {/* Heading with Thick Lime Underline */}
+            <h2 className="heading-fluid text-[#1B1B1F] mb-10">
+              {ABOUT_CONTENT.headingLead}
+              <span className="underline-lime text-[#1B1B1F]">
+                {ABOUT_CONTENT.headingKeyWord}
+              </span>
+            </h2>
 
-              {/* Tile 2: 20+ Posts & Reels */}
-              <div className="glass-card p-8 flex flex-col justify-between">
+            {/* Bento Layout: Main Bio + 3 Small Highlight Tiles */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+              
+              {/* Bio Narrative Card (7 Cols) */}
+              <div className="lg:col-span-7 bento-card-light flex flex-col justify-between">
                 <div>
-                  <div className="bento-icon-box bento-icon-pink">
-                    <Video size={24} />
-                  </div>
-                  <h3 className="font-display text-2xl font-extrabold text-[#FF4D8D] mb-2">
-                    20+ posts & reels created
+                  <h3 className="font-display text-2xl sm:text-3xl font-extrabold text-[#1B1B1F] leading-snug mb-5" style={{ textWrap: 'balance' }}>
+                    Digital Media Marketing Intern & Content Creator based in Bangalore.
                   </h3>
-                  <p className="text-sm text-[#9E9EA8] leading-relaxed">
-                    Published marketing creatives, short-form reels, and story designs across campaigns.
-                  </p>
-                </div>
-                <div className="text-[11px] font-bold text-[#6B6B78] uppercase tracking-wider mt-6">
-                  Production Volume
-                </div>
-              </div>
 
-              {/* Tile 3: Bangalore Location */}
-              <div className="glass-card p-8 flex flex-col justify-between">
-                <div>
-                  <div className="bento-icon-box bento-icon-yellow">
-                    <MapPin size={24} />
-                  </div>
-                  <h3 className="font-display text-2xl font-extrabold text-white mb-2">
-                    Bangalore
-                  </h3>
-                  <p className="text-sm text-[#9E9EA8] leading-relaxed">
-                    Based in Rajajinagar, Bangalore, Karnataka. Ready for in-person or hybrid roles.
-                  </p>
-                </div>
-                <div className="text-[11px] font-bold text-[#FFD84D] uppercase tracking-wider mt-6">
-                  Location Hub
-                </div>
-              </div>
-
-              {/* Tile 4: Creative Tools Stack */}
-              <div className="glass-card p-8 flex flex-col justify-between md:col-span-1">
-                <div>
-                  <div className="bento-icon-box bento-icon-violet">
-                    <Layers size={24} />
-                  </div>
-                  <h3 className="font-display text-xl font-extrabold text-white mb-2">
-                    Creative Tools
-                  </h3>
-                  <p className="text-sm text-[#9E9EA8] mb-4">
-                    Everyday production toolkit for design, visuals, and copy.
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {['Canva', 'Adobe Photoshop', 'Adobe Illustrator', 'ChatGPT', 'Claude'].map((tool) => (
-                      <span key={tool} className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-semibold text-white">
-                        {tool}
-                      </span>
+                  <div className="flex flex-col gap-4 text-base sm:text-lg text-[#5A5A66] leading-relaxed">
+                    {ABOUT_CONTENT.bioParagraphs.map((para, idx) => (
+                      <p key={idx}>{para}</p>
                     ))}
                   </div>
                 </div>
+
+                <div className="pt-6 mt-6 border-t border-[#EADFD3] flex items-center gap-2 text-sm font-semibold text-[#5A5A66]">
+                  <MapPin size={18} className="text-[#FF5C39]" />
+                  <span>{CONTACT_CONTENT.location}</span>
+                </div>
               </div>
 
-              {/* Tile 5: Internship Status */}
-              <div className="glass-card p-8 flex flex-col justify-between md:col-span-1">
-                <div>
-                  <div className="bento-icon-box bento-icon-pink">
-                    <Sparkles size={24} />
+              {/* 3 Highlight Tiles (5 Cols) */}
+              <div className="lg:col-span-5 flex flex-col gap-4 justify-between">
+                {ABOUT_CONTENT.highlightTiles.map((tile, idx) => (
+                  <div key={tile.id} className="bento-card-light flex-1 flex items-start gap-4">
+                    <div className={idx === 0 ? "icon-chip-coral" : idx === 1 ? "icon-chip-violet" : "icon-chip-lime"}>
+                      {renderIcon(tile.iconName)}
+                    </div>
+                    <div>
+                      <h4 className="font-display text-lg font-bold text-[#1B1B1F] mb-1">
+                        {tile.title}
+                      </h4>
+                      <p className="text-sm text-[#5A5A66] leading-relaxed">
+                        {tile.description}
+                      </p>
+                    </div>
                   </div>
-                  <h3 className="font-display text-xl font-extrabold text-[#10B981] mb-2">
-                    Open to internships
-                  </h3>
-                  <p className="text-sm text-[#9E9EA8] leading-relaxed">
-                    Actively seeking opportunities in social media marketing, content creation, and brand design.
-                  </p>
-                </div>
-                <a href="#contact" className="btn btn-secondary w-full text-center mt-6">
-                  Let's Talk
-                </a>
+                ))}
               </div>
+
             </div>
+
           </div>
         </section>
 
         {/* ==========================================================================
-             4. WORK SHOWCASE (THE STAR)
+             3. EDUCATION SECTION (Cream Background #FFF8F0, >=96px vertical padding)
              ========================================================================== */}
-        <section id="work" className="section-pad">
-          <div className="max-w-[1240px] mx-auto px-5 md:px-9">
-            <div className="mb-10">
-              <span className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-[#FF4D8D] mb-3">
-                <span className="w-2 h-2 rounded-full bg-[#FF4D8D] shadow-[0_0_8px_#FF4D8D]" />
-                Portfolio Showcase
-              </span>
-              <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white">
-                Selected <span className="font-serif-accent">Work</span>
-              </h2>
-              <p className="text-[#9E9EA8] max-w-xl text-base sm:text-lg mt-3">
-                Real-world social media design, photography series, Adobe design collateral, and brand marketing.
-              </p>
+        <section id="education" className="section-cream section-padding border-b border-[#EADFD3]">
+          <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+            
+            {/* Section Label */}
+            <div className="section-badge-violet">
+              <span>{EDUCATION_CONTENT[0] ? "02 - EDUCATION" : "02 - EDUCATION"}</span>
             </div>
 
-            {/* Filter Pills */}
-            <div className="flex items-center gap-2.5 overflow-x-auto pb-4 mb-10 no-scrollbar" role="tablist">
-              {CATEGORIES.map((cat) => (
+            {/* Heading with Thick Coral Underline */}
+            <h2 className="heading-fluid text-[#1B1B1F] mb-4">
+              Academic Foundation &{' '}
+              <span className="underline-coral text-[#FF5C39]">
+                Coursework
+              </span>
+            </h2>
+            <p className="text-lg text-[#5A5A66] max-w-xl mb-12">
+              Formal business administration studies and pre-university credentials.
+            </p>
+
+            {/* Vertical Timeline with Cards */}
+            <div className="timeline-stem flex flex-col gap-8 max-w-3xl">
+              {EDUCATION_CONTENT.map((edu) => (
+                <div key={edu.id} className="relative">
+                  <span className="timeline-bullet-violet" />
+                  <div className="bento-card-light">
+                    <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+                      <span className="text-xs font-bold uppercase tracking-wider text-[#6C4CF1] bg-[#6C4CF1]/10 px-3 py-1 rounded-[var(--radius)]">
+                        {edu.years}
+                      </span>
+                    </div>
+                    <h3 className="font-display text-xl sm:text-2xl font-bold text-[#1B1B1F] mb-1">
+                      {edu.degree}
+                    </h3>
+                    <p className="text-sm font-semibold text-[#5A5A66] mb-3">
+                      {edu.institution}
+                    </p>
+                    <p className="text-sm text-[#5A5A66] leading-relaxed border-t border-[#EADFD3] pt-3">
+                      <strong className="text-[#1B1B1F]">Relevant details:</strong> {edu.relevantDetails}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+          </div>
+        </section>
+
+        {/* ==========================================================================
+             4. EXPERIENCE & INTERNSHIPS (White Background #FFFFFF, >=96px padding)
+             ========================================================================== */}
+        <section id="experience" className="section-white section-padding border-b border-[#EADFD3]">
+          <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+            
+            {/* Section Label */}
+            <div className="section-badge-coral">
+              <span>03 - EXPERIENCE</span>
+            </div>
+
+            {/* Heading with Thick Lime Underline */}
+            <h2 className="heading-fluid text-[#1B1B1F] mb-4">
+              Hands-On Internship &{' '}
+              <span className="underline-lime text-[#1B1B1F]">
+                Studio Roles
+              </span>
+            </h2>
+            <p className="text-lg text-[#5A5A66] max-w-xl mb-12">
+              Direct social media page management, campaign asset design, and video workflows.
+            </p>
+
+            {/* Vertical Timeline for Experience */}
+            <div className="timeline-stem flex flex-col gap-8 max-w-3xl mb-12">
+              {EXPERIENCE_CONTENT.map((exp) => (
+                <div key={exp.id} className="relative">
+                  <span className="timeline-bullet-coral" />
+                  <div className="bento-card-light">
+                    <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+                      <span className="text-xs font-bold uppercase tracking-wider text-[#FF5C39] bg-[#FF5C39]/10 px-3 py-1 rounded-[var(--radius)]">
+                        {exp.period}
+                      </span>
+                      <span className="text-xs font-semibold text-[#5A5A66]">
+                        {exp.location}
+                      </span>
+                    </div>
+
+                    <h3 className="font-display text-xl sm:text-2xl font-bold text-[#1B1B1F] mb-1">
+                      {exp.role}
+                    </h3>
+
+                    <p className="text-base font-bold text-[#FF5C39] mb-4">
+                      {exp.company}
+                    </p>
+
+                    <ul className="flex flex-col gap-2.5 text-sm text-[#5A5A66]">
+                      {exp.bullets.map((bullet, idx) => (
+                        <li key={idx} className="flex items-start gap-2.5">
+                          <CheckCircle2 size={18} className="text-[#FF5C39] shrink-0 mt-0.5" />
+                          <span>{bullet}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Certifications and Courses as Small Badge Tiles */}
+            <div>
+              <h3 className="font-display text-xl font-bold text-[#1B1B1F] mb-4 flex items-center gap-2">
+                <Award size={20} className="text-[#6C4CF1]" />
+                Certifications & Course Highlights
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {CERTIFICATIONS_CONTENT.map((cert) => (
+                  <div key={cert.id} className="bento-card-light !p-5 flex flex-col justify-between">
+                    <span className="text-xs font-bold uppercase tracking-wider text-[#6C4CF1] mb-1">
+                      {cert.issuer}
+                    </span>
+                    <h4 className="font-display text-base font-bold text-[#1B1B1F]">
+                      {cert.title}
+                    </h4>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        {/* ==========================================================================
+             5. WORK SECTION (Dark Ink Background #1B1B1F, >=96px vertical padding)
+             ========================================================================== */}
+        <section id="work" className="section-ink section-padding border-b border-white/10">
+          <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+            
+            {/* Section Label */}
+            <div className="section-badge-lime">
+              <span>04 - WORK</span>
+            </div>
+
+            {/* Heading with Thick Coral Underline */}
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+              <div>
+                <h2 className="heading-fluid text-white">
+                  Campaigns & Visual{' '}
+                  <span className="underline-coral text-white">
+                    Creatives
+                  </span>
+                </h2>
+                <p className="text-lg text-[#B2B4C2] mt-3 max-w-xl">
+                  17 verified portfolio works. Click any card to inspect the Goal, What I did, and Results.
+                </p>
+              </div>
+            </div>
+
+            {/* Category Filter Buttons (with 6px radius) */}
+            <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-8 scrollbar-none" role="tablist">
+              {WORK_CATEGORIES.map((cat) => (
                 <button
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
-                  className={`min-h-[44px] px-6 py-2 rounded-full text-sm font-bold transition-all whitespace-nowrap cursor-pointer ${
-                    activeCategory === cat
-                      ? 'bg-[#FF4D8D] text-white shadow-[0_0_20px_rgba(255,77,141,0.35)]'
-                      : 'bg-white/5 border border-white/10 text-[#9E9EA8] hover:text-white hover:bg-white/10'
-                  }`}
+                  className={`work-filter-pill ${activeCategory === cat ? 'active' : ''}`}
                   role="tab"
                   aria-selected={activeCategory === cat}
                 >
@@ -515,416 +566,351 @@ export default function App() {
               ))}
             </div>
 
-            {/* Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7">
-              {filteredItems.map((item, index) => (
-                <article
+            {/* 4-Column Dense Bento Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-[220px] md:auto-rows-[260px] [grid-auto-flow:dense]">
+              {filteredPortfolio.map((item) => (
+                <div
                   key={item.id}
-                  onClick={() => setLightboxIndex(index)}
-                  className="gallery-card group"
+                  className={`work-bento-tile group ${item.bentoSpan}`}
                   tabIndex={0}
                   role="button"
-                  aria-label={`View project ${item.title}`}
+                  aria-label={`View details for ${item.title}`}
+                  onClick={() => setActiveModalItem(item)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      setActiveModalItem(item);
+                    }
+                  }}
                 >
                   <img
                     src={item.fileName}
-                    alt={`${item.title} - ${item.category}`}
-                    className="gallery-img"
+                    alt={item.title}
                     loading="lazy"
                     onError={(e) => {
-                      // Fallback placeholder container
                       const target = e.currentTarget;
                       target.style.display = 'none';
-                      const parent = target.parentElement;
-                      if (parent && !parent.querySelector('.soft-gradient-placeholder')) {
-                        const fallback = document.createElement('div');
-                        fallback.className = 'soft-gradient-placeholder';
-                        fallback.innerHTML = `
-                          <div class="placeholder-neon-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
-                          </div>
-                          <span class="gallery-cat-tag">${item.category}</span>
-                          <h4 class="gallery-card-title">${item.title}</h4>
-                        `;
-                        parent.appendChild(fallback);
-                      }
                     }}
                   />
-                  <div className="gallery-overlay">
-                    <span className="gallery-cat-tag">{item.category}</span>
-                    <h3 className="gallery-card-title">{item.title}</h3>
+
+                  {/* Dark Gradient Overlay for Guaranteed Contrast */}
+                  <div className="work-tile-scrim">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-[#D9F76B] mb-1">
+                      {item.category}
+                    </span>
+                    <h3
+                      className="font-display text-lg sm:text-xl font-bold text-white leading-snug group-hover:text-[#FF5C39] transition-colors"
+                      style={{ overflowWrap: 'anywhere', textWrap: 'balance' }}
+                    >
+                      {item.title}
+                    </h3>
+                    <div className="flex items-center justify-between text-xs text-[#B2B4C2] mt-2 pt-2 border-t border-white/10 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <span>View Case Study</span>
+                      <ArrowRight size={14} className="text-[#FF5C39]" />
+                    </div>
                   </div>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ==========================================================================
-             5. WORK EXPERIENCE TIMELINE
-             ========================================================================== */}
-        <section id="experience" className="section-pad">
-          <div className="max-w-[1240px] mx-auto px-5 md:px-9">
-            <div className="mb-12">
-              <span className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-[#FF4D8D] mb-3">
-                <span className="w-2 h-2 rounded-full bg-[#FF4D8D] shadow-[0_0_8px_#FF4D8D]" />
-                Career Path
-              </span>
-              <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white">
-                Work <span className="font-serif-accent">Experience</span>
-              </h2>
-              <p className="text-[#9E9EA8] max-w-xl text-base sm:text-lg mt-3">
-                Real brand impact across social strategy, video workflows, and content creation.
-              </p>
-            </div>
-
-            <div className="timeline-track">
-              {/* Role 1 */}
-              <div className="glass-card timeline-card">
-                <span className="timeline-node" />
-                <div className="text-xs font-bold text-[#FFD84D] uppercase tracking-wider mb-2">
-                  Aug 2026 - Present
-                </div>
-                <h3 className="font-display text-2xl font-bold text-white">
-                  Media Management & Video Editing
-                </h3>
-                <p className="text-base font-bold text-[#FF4D8D] mb-4">
-                  San Art Studio, Basaveshwar Nagar, Bangalore
-                </p>
-                <ul className="flex flex-col gap-2.5 text-sm text-[#9E9EA8]">
-                  <li className="flex items-start gap-3">
-                    <Check size={18} className="text-[#FF4D8D] shrink-0 mt-0.5" />
-                    <span>Directing media management workflows, visual curation, and multi-platform video editing.</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <Check size={18} className="text-[#FF4D8D] shrink-0 mt-0.5" />
-                    <span>Ensuring dynamic visual consistency and high-impact digital presence across campaigns.</span>
-                  </li>
-                </ul>
-              </div>
-
-              {/* Role 2 */}
-              <div className="glass-card timeline-card">
-                <span className="timeline-node node-yellow" />
-                <div className="text-xs font-bold text-[#FFD84D] uppercase tracking-wider mb-2">
-                  3 Months Duration
-                </div>
-                <h3 className="font-display text-2xl font-bold text-white">
-                  Social Media Marketing Intern
-                </h3>
-                <p className="text-base font-bold text-[#FF4D8D] mb-4">
-                  Think Stationary, Bangalore
-                </p>
-                <ul className="flex flex-col gap-2.5 text-sm text-[#9E9EA8]">
-                  <li className="flex items-start gap-3">
-                    <Check size={18} className="text-[#FF4D8D] shrink-0 mt-0.5" />
-                    <span>Managed the brand's Instagram page, including posting schedules and audience engagement.</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <Check size={18} className="text-[#FF4D8D] shrink-0 mt-0.5" />
-                    <span>Designed promotional creatives and marketing posts for social media using Canva.</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <Check size={18} className="text-[#FF4D8D] shrink-0 mt-0.5" />
-                    <span>Wrote captions and planned content aligned with the brand's voice and offers.</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <Check size={18} className="text-[#FF4D8D] shrink-0 mt-0.5" />
-                    <span>Created short-form Reels to support the brand's content and reach.</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <Check size={18} className="text-[#FF4D8D] shrink-0 mt-0.5" />
-                    <span>Edited product photos and basic marketing visuals for campaigns.</span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <Check size={18} className="text-[#FF4D8D] shrink-0 mt-0.5" />
-                    <span>Supported day-to-day customer interaction and communication activities.</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ==========================================================================
-             6. SKILLS CHIPS
-             ========================================================================= */}
-        <section id="skills" className="section-pad">
-          <div className="max-w-[1240px] mx-auto px-5 md:px-9">
-            <div className="mb-10">
-              <span className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-[#FF4D8D] mb-3">
-                <span className="w-2 h-2 rounded-full bg-[#FF4D8D] shadow-[0_0_8px_#FF4D8D]" />
-                Capabilities
-              </span>
-              <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white">
-                Core <span className="font-serif-accent">Skills</span>
-              </h2>
-              <p className="text-[#9E9EA8] max-w-xl text-base sm:text-lg mt-3">
-                Versatile competencies spanning digital strategy, visual design, and team collaboration.
-              </p>
-            </div>
-
-            <div className="flex flex-wrap gap-3.5">
-              {SKILLS.map((skill) => (
-                <div key={skill} className="skill-glowing-chip">
-                  <span className="text-[#FFD84D]">✦</span>
-                  <span>{skill}</span>
                 </div>
               ))}
             </div>
+
           </div>
         </section>
 
         {/* ==========================================================================
-             7. EDUCATION
+             6. SKILLS AND TOOLS (White Background #FFFFFF, >=96px vertical padding)
+             Renumbered from 06 to 05
              ========================================================================== */}
-        <section id="education" className="section-pad">
-          <div className="max-w-[1240px] mx-auto px-5 md:px-9">
-            <div className="mb-10">
-              <span className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-[#FF4D8D] mb-3">
-                <span className="w-2 h-2 rounded-full bg-[#FF4D8D] shadow-[0_0_8px_#FF4D8D]" />
-                Foundation
+        <section id="skills" className="section-white section-padding border-b border-[#EADFD3]">
+          <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+            
+            {/* Section Label: 05 - SKILLS & TOOLS */}
+            <div className="section-badge-violet">
+              <span>05 - SKILLS & TOOLS</span>
+            </div>
+
+            {/* Heading with Thick Coral Underline */}
+            <h2 className="heading-fluid text-[#1B1B1F] mb-4">
+              Creative Strategy &{' '}
+              <span className="underline-coral text-[#FF5C39]">
+                Production Stack
               </span>
-              <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white">
-                Education <span className="font-serif-accent">& Degrees</span>
-              </h2>
-              <p className="text-[#9E9EA8] max-w-xl text-base sm:text-lg mt-3">
-                Academic trajectory in business administration and foundational studies.
-              </p>
+            </h2>
+            <p className="text-lg text-[#5A5A66] max-w-xl mb-12">
+              Grouped bento capabilities covering content, growth strategy, and daily tools.
+            </p>
+
+            {/* Bento Tiles Grouped as Content, Strategy, Tools */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {SKILLS_CONTENT.map((group, idx) => (
+                <div key={group.id} className="bento-card-light flex flex-col justify-between">
+                  <div>
+                    <div className={idx === 0 ? "icon-chip-coral mb-5" : idx === 1 ? "icon-chip-violet mb-5" : "icon-chip-lime mb-5"}>
+                      {renderIcon(group.iconName)}
+                    </div>
+
+                    <h3 className="font-display text-2xl font-bold text-[#1B1B1F] mb-2">
+                      {group.title}
+                    </h3>
+
+                    <p className="text-sm text-[#5A5A66] leading-relaxed mb-6">
+                      {group.description}
+                    </p>
+                  </div>
+
+                  <div className="flex flex-col gap-2.5 pt-4 border-t border-[#EADFD3]">
+                    {group.items.map((item) => (
+                      <div key={item} className="flex items-center gap-2.5 text-sm font-semibold text-[#1B1B1F]">
+                        <CheckCircle2 size={16} className={idx === 0 ? "text-[#FF5C39]" : idx === 1 ? "text-[#6C4CF1]" : "text-[#1B1B1F]"} />
+                        <span>{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-              {/* BBA */}
-              <div className="glass-card p-7 flex flex-col justify-between">
-                <div>
-                  <span className="text-[11px] font-black uppercase tracking-wider text-[#FF4D8D] mb-2 block">
-                    Undergraduate
-                  </span>
-                  <h3 className="font-display text-xl font-bold text-white mb-2">
-                    Bachelor of Business Administration (BBA)
-                  </h3>
-                  <p className="text-sm text-[#9E9EA8]">
-                    St. Claret College Autonomous, Jalahalli
-                  </p>
-                </div>
-                <div className="text-xs font-bold text-[#FFD84D] mt-6">
-                  2025 - 2028 (Pursuing)
-                </div>
-              </div>
-
-              {/* PUC */}
-              <div className="glass-card p-7 flex flex-col justify-between">
-                <div>
-                  <span className="text-[11px] font-black uppercase tracking-wider text-[#FF4D8D] mb-2 block">
-                    Pre-University
-                  </span>
-                  <h3 className="font-display text-xl font-bold text-white mb-2">
-                    Pre-University Course (PUC)
-                  </h3>
-                  <p className="text-sm text-[#9E9EA8]">
-                    Carmel Pre University College
-                  </p>
-                </div>
-                <div className="text-xs font-bold text-[#FFD84D] mt-6">
-                  Completed
-                </div>
-              </div>
-
-              {/* Secondary */}
-              <div className="glass-card p-7 flex flex-col justify-between">
-                <div>
-                  <span className="text-[11px] font-black uppercase tracking-wider text-[#FF4D8D] mb-2 block">
-                    Secondary
-                  </span>
-                  <h3 className="font-display text-xl font-bold text-white mb-2">
-                    Secondary Education
-                  </h3>
-                  <p className="text-sm text-[#9E9EA8]">
-                    East West Academy
-                  </p>
-                </div>
-                <div className="text-xs font-bold text-[#FFD84D] mt-6">
-                  Completed
-                </div>
-              </div>
-            </div>
           </div>
         </section>
 
         {/* ==========================================================================
-             8. CONTACT ("LET'S CREATE SOMETHING TOGETHER")
+             7. CONTACT (Cream Background #FFF8F0, Large Coral CTA Tile)
+             Renumbered from 07 to 06
              ========================================================================== */}
-        <section id="contact" className="section-pad">
-          <div className="max-w-[1240px] mx-auto px-5 md:px-9">
-            <div className="glass-card p-8 sm:p-14 bg-radial from-[#FF4D8D]/15 via-[#8B5CF6]/10 to-[#16161D]/80">
-              <span className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-[#FF4D8D] mb-3">
-                <span className="w-2 h-2 rounded-full bg-[#FF4D8D] shadow-[0_0_8px_#FF4D8D]" />
-                Get In Touch
-              </span>
-              <h2 className="font-display text-4xl sm:text-6xl font-black text-white leading-tight mb-5">
-                Let's <span className="font-serif-accent">create</span> something together
-              </h2>
-              <p className="text-[#9E9EA8] text-base sm:text-lg max-w-2xl leading-relaxed mb-9">
-                I'm actively looking for internship and entry-level opportunities in digital marketing and content creation. Reach out to discuss campaigns, designs, or opportunities!
-              </p>
+        <section id="contact" className="section-cream section-padding">
+          <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+            
+            {/* Section Label: 06 - CONTACT */}
+            <div className="section-badge-coral">
+              <span>{CONTACT_CONTENT.sectionLabel}</span>
+            </div>
 
-              {/* Quick Contact Links */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-9">
-                <a href="tel:+919380985303" className="flex items-center gap-3.5 p-4 rounded-xl bg-white/5 border border-white/10 hover:border-[#FF4D8D] hover:bg-white/10 transition-all">
-                  <div className="w-10 h-10 rounded-lg bg-[#FF4D8D]/15 text-[#FF4D8D] flex items-center justify-center shrink-0">
-                    <Phone size={20} />
-                  </div>
-                  <div>
-                    <div className="text-[11px] font-bold text-[#6B6B78] uppercase">Phone (Tap to call)</div>
-                    <div className="text-sm font-bold text-white">+91 93809 85303</div>
-                  </div>
-                </a>
+            {/* Large Coral Call-to-Action Tile with 6px corners and sharp borders */}
+            <div className="rounded-[var(--radius)] p-8 sm:p-12 md:p-16 bg-[#FF5C39] text-white border-2 border-[#1B1B1F] shadow-none">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                
+                {/* Left: Headline & Statement (7 Cols) */}
+                <div className="lg:col-span-7">
+                  <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-[var(--radius)] bg-white/20 text-white text-xs font-bold uppercase tracking-wider mb-4 border border-white/30">
+                    <Sparkles size={14} />
+                    Ready for new opportunities
+                  </span>
 
-                <a href="mailto:magajipoonam8@gmail.com" className="flex items-center gap-3.5 p-4 rounded-xl bg-white/5 border border-white/10 hover:border-[#FFD84D] hover:bg-white/10 transition-all">
-                  <div className="w-10 h-10 rounded-lg bg-[#FFD84D]/15 text-[#FFD84D] flex items-center justify-center shrink-0">
-                    <Mail size={20} />
-                  </div>
-                  <div>
-                    <div className="text-[11px] font-bold text-[#6B6B78] uppercase">Email (Tap to mail)</div>
-                    <div className="text-xs sm:text-sm font-bold text-white truncate max-w-[180px]">magajipoonam8@gmail.com</div>
-                  </div>
-                </a>
+                  <h2 className="heading-fluid text-white mb-4">
+                    {CONTACT_CONTENT.headingLead}
+                    <span className="underline-lime text-white">
+                      {CONTACT_CONTENT.headingKeyWord}
+                    </span>
+                  </h2>
 
-                <div className="flex items-center gap-3.5 p-4 rounded-xl bg-white/5 border border-white/10">
-                  <div className="w-10 h-10 rounded-lg bg-[#8B5CF6]/15 text-[#8B5CF6] flex items-center justify-center shrink-0">
-                    <MapPin size={20} />
-                  </div>
-                  <div>
-                    <div className="text-[11px] font-bold text-[#6B6B78] uppercase">Location</div>
-                    <div className="text-sm font-bold text-white">Rajajinagar, Bangalore</div>
+                  <p className="text-base sm:text-lg text-white/90 leading-relaxed max-w-xl mb-6">
+                    {CONTACT_CONTENT.subline}
+                  </p>
+
+                  <div className="flex items-center gap-2 text-sm text-white/80">
+                    <MapPin size={18} />
+                    <span>{CONTACT_CONTENT.location}</span>
                   </div>
                 </div>
-              </div>
 
-              {/* Buttons Bar */}
-              <div className="flex flex-wrap gap-3.5">
-                <a
-                  href="https://wa.me/919380985303"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn btn-whatsapp"
-                >
-                  Chat on WhatsApp
-                </a>
-                <a
-                  href="resume.pdf"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  download="Poonam_MR_Resume.pdf"
-                  className="btn btn-primary"
-                >
-                  <Download size={18} />
-                  Download Resume
-                </a>
-                <a
-                  href="https://instagram.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn btn-secondary"
-                >
-                  Instagram
-                </a>
-                <a
-                  href="https://linkedin.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn btn-secondary"
-                >
-                  LinkedIn
-                </a>
+                {/* Right: Contact & Social Action Buttons (5 Cols) with 6px corners */}
+                <div className="lg:col-span-5 flex flex-col gap-3.5">
+                  <a
+                    href={`mailto:${CONTACT_CONTENT.email}`}
+                    className="p-4 rounded-[var(--radius)] bg-white text-[#1B1B1F] font-bold text-sm sm:text-base flex items-center justify-center gap-2.5 border border-[#1B1B1F] btn-contact-action"
+                  >
+                    <Mail size={18} className="text-[#FF5C39]" />
+                    Email: {CONTACT_CONTENT.email}
+                  </a>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <a
+                      href={CONTACT_CONTENT.whatsappUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-3.5 rounded-[var(--radius)] bg-white/15 text-white font-bold text-sm flex items-center justify-center gap-2 border border-white/30 btn-contact-action"
+                    >
+                      <MessageCircle size={18} />
+                      WhatsApp
+                    </a>
+
+                    <a
+                      href={`tel:${CONTACT_CONTENT.phone.replace(/\s+/g, '')}`}
+                      className="p-3.5 rounded-[var(--radius)] bg-white/15 text-white font-bold text-sm flex items-center justify-center gap-2 border border-white/30 btn-contact-action"
+                    >
+                      <Phone size={18} />
+                      Direct Call
+                    </a>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <a
+                      href={CONTACT_CONTENT.instagramUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-3.5 rounded-[var(--radius)] bg-white/15 text-white font-bold text-sm flex items-center justify-center gap-2 border border-white/30 btn-contact-action"
+                    >
+                      <Instagram size={18} />
+                      Instagram
+                    </a>
+
+                    <a
+                      href={CONTACT_CONTENT.linkedinUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-3.5 rounded-[var(--radius)] bg-white/15 text-white font-bold text-sm flex items-center justify-center gap-2 border border-white/30 btn-contact-action"
+                    >
+                      <Linkedin size={18} />
+                      LinkedIn
+                    </a>
+                  </div>
+
+                  <a
+                    href={CONTACT_CONTENT.resumeUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    download={CONTACT_CONTENT.resumeFileName}
+                    className="p-4 rounded-[var(--radius)] bg-[#1B1B1F] text-white font-bold text-sm flex items-center justify-center gap-2 border border-white/20 btn-contact-action"
+                  >
+                    <Download size={18} className="text-[#D9F76B]" />
+                    Download Resume (PDF)
+                  </a>
+                </div>
+
               </div>
             </div>
+
           </div>
         </section>
       </main>
 
       {/* ==========================================================================
-           FULLSCREEN LIGHTBOX MODAL
+           CASE STUDY MODAL (Lightbox with 6px corners & flat shadow)
            ========================================================================== */}
-      {lightboxIndex !== null && filteredItems[lightboxIndex] && (
+      {activeModalItem && (
         <div
-          className="fixed inset-0 z-[10000] bg-[#0A0A0E]/96 backdrop-blur-2xl flex items-center justify-center p-4 sm:p-6"
+          className="fixed inset-0 z-50 bg-[#1B1B1F]/90 backdrop-blur-md flex items-center justify-center p-4 sm:p-6"
           role="dialog"
           aria-modal="true"
-          onClick={() => setLightboxIndex(null)}
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleTouchEnd}
+          onClick={() => setActiveModalItem(null)}
         >
           <div
-            className="relative w-full max-w-4xl max-h-[90vh] flex flex-col items-center"
+            className="relative w-full max-w-4xl max-h-[92vh] flex flex-col bg-white rounded-[var(--radius)] border-2 border-[#1B1B1F] shadow-[6px_6px_0_#1B1B1F] overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Close Button */}
-            <button
-              onClick={() => setLightboxIndex(null)}
-              className="absolute -top-12 right-0 w-10 h-10 rounded-full bg-white/10 hover:bg-[#FF4D8D] text-white flex items-center justify-center transition-colors cursor-pointer"
-              aria-label="Close fullscreen preview"
-            >
-              <X size={20} />
-            </button>
-
-            {/* Prev Button */}
-            <button
-              onClick={() => setLightboxIndex((prev) => (prev !== null ? (prev - 1 + filteredItems.length) % filteredItems.length : null))}
-              className="absolute left-2 sm:-left-14 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/10 hover:bg-[#FF4D8D] text-white flex items-center justify-center transition-all cursor-pointer z-20"
-              aria-label="Previous work"
-            >
-              <ArrowLeft size={20} />
-            </button>
-
-            {/* Image Box */}
-            <div className="w-full max-h-[72vh] flex items-center justify-center overflow-hidden rounded-xl">
-              <img
-                src={filteredItems[lightboxIndex].fileName}
-                alt={filteredItems[lightboxIndex].title}
-                className="max-w-full max-h-[72vh] object-contain rounded-xl shadow-[0_25px_60px_rgba(0,0,0,0.8)]"
-              />
-            </div>
-
-            {/* Next Button */}
-            <button
-              onClick={() => setLightboxIndex((prev) => (prev !== null ? (prev + 1) % filteredItems.length : null))}
-              className="absolute right-2 sm:-right-14 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/10 hover:bg-[#FF4D8D] text-white flex items-center justify-center transition-all cursor-pointer z-20"
-              aria-label="Next work"
-            >
-              <ArrowRight size={20} />
-            </button>
-
-            {/* Caption & Counter */}
-            <div className="w-full flex items-center justify-between pt-4 text-white">
+            {/* Modal Header */}
+            <div className="p-4 sm:p-5 border-b border-[#EADFD3] flex items-center justify-between gap-4 bg-[#FFF8F0]">
               <div>
-                <span className="text-xs font-bold text-[#FF4D8D] uppercase tracking-wider block">
-                  {filteredItems[lightboxIndex].category}
+                <span className="text-xs font-bold uppercase tracking-wider text-[#FF5C39] block">
+                  {activeModalItem.category}
                 </span>
-                <h3 className="font-display text-lg sm:text-xl font-bold">
-                  {filteredItems[lightboxIndex].title}
+                <h3 className="font-display text-lg sm:text-xl font-bold text-[#1B1B1F]">
+                  {activeModalItem.title}
                 </h3>
               </div>
-              <div className="text-xs font-bold text-[#9E9EA8] bg-white/10 px-3 py-1 rounded-full">
-                {lightboxIndex + 1} / {filteredItems.length}
+
+              {/* Close Button with 6px radius */}
+              <button
+                onClick={() => setActiveModalItem(null)}
+                className="w-10 h-10 rounded-[var(--radius)] bg-white border border-[#EADFD3] hover:border-[#1B1B1F] hover:bg-[#FF5C39] hover:text-white text-[#1B1B1F] flex items-center justify-center transition-all cursor-pointer shrink-0"
+                aria-label="Close modal"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="overflow-y-auto p-4 sm:p-6 flex flex-col gap-6">
+              {/* Full Image */}
+              <div className="w-full max-h-[55vh] flex items-center justify-center rounded-[var(--radius)] bg-[#1B1B1F] overflow-hidden border border-[#EADFD3]">
+                <img
+                  src={activeModalItem.fileName}
+                  alt={activeModalItem.title}
+                  className="max-h-[55vh] w-auto max-w-full object-contain"
+                />
               </div>
+
+              {/* Three Labeled Lines: Goal, What I did, Result */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-5 rounded-[var(--radius)] bg-[#FFF8F0] border border-[#EADFD3]">
+                {/* 1. Goal */}
+                <div>
+                  <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#FF5C39] block mb-1">
+                    Goal
+                  </span>
+                  <p className="text-sm text-[#1B1B1F] leading-relaxed">
+                    {activeModalItem.goal}
+                  </p>
+                </div>
+
+                {/* 2. What I did */}
+                <div>
+                  <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#6C4CF1] block mb-1">
+                    What I did
+                  </span>
+                  <p className="text-sm text-[#1B1B1F] leading-relaxed">
+                    {activeModalItem.whatIDid}
+                  </p>
+                </div>
+
+                {/* 3. Result */}
+                <div>
+                  <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#1B1B1F] block mb-1">
+                    Result
+                  </span>
+                  <div className="text-xs font-bold px-3 py-1.5 rounded-[var(--radius)] bg-white border border-[#EADFD3] text-[#1B1B1F] inline-block">
+                    {activeModalItem.result}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Footer Controls */}
+            <div className="p-4 sm:p-5 border-t border-[#EADFD3] flex items-center justify-between text-xs text-[#5A5A66] bg-[#FFF8F0]">
+              <button
+                onClick={() => {
+                  const currentIndex = filteredPortfolio.findIndex((item) => item.id === activeModalItem.id);
+                  if (currentIndex !== -1) {
+                    const prevIndex = (currentIndex - 1 + filteredPortfolio.length) % filteredPortfolio.length;
+                    setActiveModalItem(filteredPortfolio[prevIndex]);
+                  }
+                }}
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-[var(--radius)] bg-white border border-[#EADFD3] hover:border-[#1B1B1F] text-[#1B1B1F] font-bold transition-all cursor-pointer"
+              >
+                <ArrowLeft size={16} />
+                Previous
+              </button>
+
+              <span className="font-semibold">
+                {filteredPortfolio.findIndex((item) => item.id === activeModalItem.id) + 1} of {filteredPortfolio.length}
+              </span>
+
+              <button
+                onClick={() => {
+                  const currentIndex = filteredPortfolio.findIndex((item) => item.id === activeModalItem.id);
+                  if (currentIndex !== -1) {
+                    const nextIndex = (currentIndex + 1) % filteredPortfolio.length;
+                    setActiveModalItem(filteredPortfolio[nextIndex]);
+                  }
+                }}
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-[var(--radius)] bg-white border border-[#EADFD3] hover:border-[#1B1B1F] text-[#1B1B1F] font-bold transition-all cursor-pointer"
+              >
+                Next
+                <ArrowRight size={16} />
+              </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Footer */}
-      <footer className="border-t border-white/10 py-10 bg-[#09090C] mt-20">
-        <div className="max-w-[1240px] mx-auto px-5 md:px-9 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
-          <div>
-            <div className="font-display text-lg font-bold text-white">Poonam MR</div>
-            <p className="text-xs text-[#9E9EA8] mt-1">
-              Digital Marketing Intern · Content Creator · Canva Designer
-            </p>
+      {/* ==========================================================================
+           SIMPLE FOOTER
+           ========================================================================== */}
+      <footer className="border-t border-[#EADFD3] py-8 bg-[#FFF8F0] text-center text-xs text-[#5A5A66]">
+        <div className="max-w-[1280px] mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="font-display text-sm font-bold text-[#1B1B1F]">
+            {CONTACT_CONTENT.name} · {CONTACT_CONTENT.role}
           </div>
           <div>
-            <p className="text-xs text-[#6B6B78]">© 2026 Poonam MR. All rights reserved.</p>
-            <p className="text-[11px] text-[#6B6B78] mt-0.5">Rajajinagar, Bangalore, Karnataka, India</p>
+            {CONTACT_CONTENT.footerCopyright}
           </div>
         </div>
       </footer>

@@ -1,0 +1,421 @@
+/**
+ * ==========================================================================
+ * POONAM MR — ALL EDITABLE PORTFOLIO CONTENT IN ONE PLACE
+ * ==========================================================================
+ * Edit your headlines, bio, education, experience, case studies, skills, and
+ * links right here in this single file.
+ */
+
+// 1. HERO SECTION
+export const HERO_CONTENT = {
+  headlineStart: "I turn ideas into content people ",
+  headlineKeyWord: "actually engage",
+  headlineEnd: " with.",
+  fullHeadline: "I turn ideas into content people actually engage with.",
+  subline: "Digital Media Marketing Intern & Content Creator, Bangalore",
+  primaryCtaText: "See my work",
+  secondaryCtaText: "Download resume",
+  statusBadgeText: "Open to internships",
+  statusLocation: "Bangalore",
+  // 3 quick skill chips displayed in the hero bento cluster
+  heroSkillChips: [
+    "Short-Form Reels",
+    "Content Strategy",
+    "Visual Storytelling"
+  ],
+  // 2 featured images in hero cluster
+  heroFeatureImages: [
+    {
+      id: "social-feed",
+      src: "images/feed-posts.jpg",
+      tag: "Social Post",
+      title: "Feed Campaigns"
+    },
+    {
+      id: "social-stories",
+      src: "images/story-designs.jpg",
+      tag: "Stories",
+      title: "Interactive Formats"
+    }
+  ]
+};
+
+// 2. ABOUT SECTION
+export const ABOUT_CONTENT = {
+  sectionLabel: "01 - ABOUT",
+  headingLead: "A fresher marketer with an eye for ",
+  headingKeyWord: "what clicks.",
+  bioParagraphs: [
+    "Hey, I'm Poonam! I'm a BBA student and marketing fresher based in Bangalore with a passion for social media strategy and content creation.",
+    "I love turning raw brand ideas into scroll-stopping visuals, short-form reels, and story sequences that build genuine audience connection.",
+    "With hands-on experience managing official Instagram schedules, styling product photography, and editing campaign assets, I'm eager to experiment, learn fast, and create high-performing marketing content."
+  ],
+  // 3 highlight tiles in the About section
+  highlightTiles: [
+    {
+      id: "highlight-content",
+      title: "Content Creation",
+      description: "Hook-driven short-form reels, visual carousels, and engaging copy written for audience retention.",
+      iconName: "Video"
+    },
+    {
+      id: "highlight-social",
+      title: "Social Media",
+      description: "Feed curation, calendar scheduling, audience engagement, and consistency across campaigns.",
+      iconName: "TrendingUp"
+    },
+    {
+      id: "highlight-photo",
+      title: "Photography",
+      description: "Natural light product staging, culinary framing, and aesthetic visual documentation.",
+      iconName: "Camera"
+    }
+  ]
+};
+
+// 3. EDUCATION SECTION
+export interface EducationItem {
+  id: string;
+  degree: string;
+  institution: string;
+  years: string;
+  relevantDetails: string;
+}
+
+export const EDUCATION_CONTENT: EducationItem[] = [
+  {
+    id: "edu-bba",
+    degree: "Bachelor of Business Administration (BBA)",
+    institution: "St. Claret College Autonomous, Jalahalli, Bangalore",
+    years: "2025 - 2028 (Pursuing)",
+    relevantDetails: "Focusing on Marketing Management, Business Communication, Consumer Behavior, and Digital Strategy."
+  },
+  {
+    id: "edu-puc",
+    degree: "Pre-University Course (PUC)",
+    institution: "Carmel Pre University College, Bangalore",
+    years: "Completed",
+    relevantDetails: "Commerce stream with foundation in Business Studies, Accountancy, and Economics."
+  },
+  {
+    id: "edu-school",
+    degree: "Secondary Education",
+    institution: "East West Academy, Bangalore",
+    years: "Completed",
+    relevantDetails: "Core academic coursework with active participation in creative and cultural events."
+  }
+];
+
+// 4. EXPERIENCE & INTERNSHIPS SECTION
+export interface ExperienceItem {
+  id: string;
+  role: string;
+  company: string;
+  location: string;
+  period: string;
+  bullets: string[];
+}
+
+export interface CertificationItem {
+  id: string;
+  title: string;
+  issuer: string;
+}
+
+export const EXPERIENCE_CONTENT: ExperienceItem[] = [
+  {
+    id: "exp-san-art",
+    role: "Media Management & Video Editing",
+    company: "San Art Studio",
+    location: "Basaveshwar Nagar, Bangalore",
+    period: "Aug 2026 - Present",
+    bullets: [
+      "Directing end-to-end media management workflows, visual asset curation, and cross-platform video editing.",
+      "Ensuring brand voice consistency, aesthetic polish, and high-impact digital presence across active campaigns."
+    ]
+  },
+  {
+    id: "exp-think-stat",
+    role: "Social Media Marketing Intern",
+    company: "Think Stationary",
+    location: "Bangalore",
+    period: "3 Months Duration",
+    bullets: [
+      "Managed the brand's official Instagram page, publishing schedules, and community audience engagement.",
+      "Designed promotional creatives and marketing posts tailored for audience retention.",
+      "Wrote compelling copy, captions, and planned content strategies aligned with brand product offers.",
+      "Created short-form Reels to expand organic brand reach and foster customer discovery.",
+      "Curated and edited product photography and basic marketing visuals for active campaigns.",
+      "Supported day-to-day customer interaction and brand communication activities."
+    ]
+  }
+];
+
+export const CERTIFICATIONS_CONTENT: CertificationItem[] = [
+  {
+    id: "cert-1",
+    title: "Digital Marketing Fundamentals",
+    issuer: "Certification / Coursework"
+  },
+  {
+    id: "cert-2",
+    title: "Social Media Strategy & Reels",
+    issuer: "Practical Internship Training"
+  },
+  {
+    id: "cert-3",
+    title: "Visual Design & Asset Creation",
+    issuer: "Studio Production Workshop"
+  }
+];
+
+// 5. WORK & CASE STUDIES SECTION (All 17 verified images)
+export interface PortfolioItem {
+  id: string;
+  title: string;
+  category: "Social Posts" | "Stories" | "Product" | "Events" | "Photography" | "Branding";
+  fileName: string;
+  bentoSpan: string; // CSS Grid span classes for responsive bento layout
+  goal: string;
+  whatIDid: string;
+  result: string; // Honest placeholder: "Add result here"
+}
+
+export const PORTFOLIO_ITEMS: PortfolioItem[] = [
+  {
+    id: "social-feed",
+    title: "Instagram Feed Campaigns",
+    category: "Social Posts",
+    fileName: "images/feed-posts.jpg",
+    bentoSpan: "col-span-1 md:col-span-2 row-span-2", // Large Hero Tile
+    goal: "Design a cohesive multi-post campaign grid to introduce new product arrivals.",
+    whatIDid: "Structured 3-column feed layouts, coordinated color palettes, and wrote promotional copy.",
+    result: "Add result here"
+  },
+  {
+    id: "social-stories",
+    title: "Interactive Story Formats",
+    category: "Stories",
+    fileName: "images/story-designs.jpg",
+    bentoSpan: "col-span-1 row-span-2", // Tall Tile
+    goal: "Boost daily audience interaction and drive website link clicks via stories.",
+    whatIDid: "Created vertical templates with poll stickers, swipe-up hooks, and announcement banners.",
+    result: "Add result here"
+  },
+  {
+    id: "photo-product",
+    title: "Commercial Product Shoot",
+    category: "Product",
+    fileName: "images/product.jpg",
+    bentoSpan: "col-span-1 row-span-1", // Standard Tile
+    goal: "Showcase fine product craftsmanship and premium textures for retail listings.",
+    whatIDid: "Handled studio lighting, product staging, and post-production color balance.",
+    result: "Add result here"
+  },
+  {
+    id: "photo-lifestyle",
+    title: "Lifestyle Editorial Staging",
+    category: "Product",
+    fileName: "images/lifestyle.jpg",
+    bentoSpan: "col-span-1 row-span-1", // Standard Tile
+    goal: "Create relatable lifestyle imagery that puts the product in everyday context.",
+    whatIDid: "Directed casual styling, outdoor natural light composition, and color grading.",
+    result: "Add result here"
+  },
+  {
+    id: "photo-event",
+    title: "Live Event Documentation",
+    category: "Events",
+    fileName: "images/event.jpg",
+    bentoSpan: "col-span-1 md:col-span-2 row-span-1", // Wide Tile
+    goal: "Document vibrant energy, guest reactions, and key speakers at a community event.",
+    whatIDid: "Captured fast-paced live moments, candid attendee emotions, and keynote highlights.",
+    result: "Add result here"
+  },
+  {
+    id: "photo-food",
+    title: "Culinary & Food Styling",
+    category: "Photography",
+    fileName: "images/food.jpg",
+    bentoSpan: "col-span-1 row-span-2", // Tall Tile
+    goal: "Produce appetizing culinary visuals for cafe menu and promotional social feeds.",
+    whatIDid: "Styled table props, utilized soft directional window light, and accented fresh textures.",
+    result: "Add result here"
+  },
+  {
+    id: "photo-nature",
+    title: "Botanical Nature Study",
+    category: "Photography",
+    fileName: "images/nature.jpg",
+    bentoSpan: "col-span-1 row-span-1", // Standard Tile
+    goal: "Capture subtle morning textures and atmospheric organic depth.",
+    whatIDid: "Framed macro botanical details using natural shallow depth of field.",
+    result: "Add result here"
+  },
+  {
+    id: "photo-sunset-1",
+    title: "Sunset Atmosphere I",
+    category: "Photography",
+    fileName: "images/sunset-1.jpg",
+    bentoSpan: "col-span-1 row-span-1", // Standard Tile
+    goal: "Study natural twilight color transitions across the Bangalore horizon.",
+    whatIDid: "Captured golden hour gradient transitions with high dynamic range exposure.",
+    result: "Add result here"
+  },
+  {
+    id: "photo-sunset-2",
+    title: "Sunset Atmosphere II",
+    category: "Photography",
+    fileName: "images/sunset-2.jpg",
+    bentoSpan: "col-span-1 row-span-1", // Standard Tile
+    goal: "Capture silhouette contrasts against deep evening orange skies.",
+    whatIDid: "Framed horizon silhouettes and balanced highlights during dusk.",
+    result: "Add result here"
+  },
+  {
+    id: "photo-kedarnath",
+    title: "Kedarnath Expedition",
+    category: "Photography",
+    fileName: "images/kedarnath.jpg",
+    bentoSpan: "col-span-1 md:col-span-2 row-span-2", // Large Feature Tile
+    goal: "Document high-altitude temple grandeur and Himalayan pilgrim atmosphere.",
+    whatIDid: "Hiked mountain routes with gear, capturing cold mountain light and architecture.",
+    result: "Add result here"
+  },
+  {
+    id: "adobe-logo",
+    title: "Brand Identity — Sip Glitz",
+    category: "Branding",
+    fileName: "images/logo-sip-glitz.jpg",
+    bentoSpan: "col-span-1 row-span-1", // Standard Tile
+    goal: "Design a recognizable modern logo mark for an artisanal beverage label.",
+    whatIDid: "Developed vector marks, refined typography balance, and established color system.",
+    result: "Add result here"
+  },
+  {
+    id: "adobe-visiting-card",
+    title: "Visiting Card Stationery",
+    category: "Branding",
+    fileName: "images/visiting-card.jpg",
+    bentoSpan: "col-span-1 row-span-1", // Standard Tile
+    goal: "Create clean, print-ready corporate business cards with clear hierarchy.",
+    whatIDid: "Engineered double-sided layout with bleed margins and legible contact structure.",
+    result: "Add result here"
+  },
+  {
+    id: "adobe-poster",
+    title: "Promotional Event Poster",
+    category: "Branding",
+    fileName: "images/poster.jpg",
+    bentoSpan: "col-span-1 row-span-2", // Tall Tile
+    goal: "Craft a high-impact advertising poster for public event announcements.",
+    whatIDid: "Combined bold typography scales, graphic accents, and date/venue clarity.",
+    result: "Add result here"
+  },
+  {
+    id: "adobe-brochure-front",
+    title: "Brochure Cover Design",
+    category: "Branding",
+    fileName: "images/brochure-front.jpg",
+    bentoSpan: "col-span-1 row-span-1", // Standard Tile
+    goal: "Design an inviting front cover that immediately communicates brand mission.",
+    whatIDid: "Balanced headline copy, brand badge, and imagery for clean folding alignment.",
+    result: "Add result here"
+  },
+  {
+    id: "adobe-brochure-back",
+    title: "Brochure Information Architecture",
+    category: "Branding",
+    fileName: "images/brochure-back.jpg",
+    bentoSpan: "col-span-1 row-span-1", // Standard Tile
+    goal: "Structure detailed service explanations and contact details for prospective clients.",
+    whatIDid: "Created scannable bullet columns, icon points, and call-to-action blocks.",
+    result: "Add result here"
+  },
+  {
+    id: "adobe-software-fonts",
+    title: "Type System & Font Stack",
+    category: "Branding",
+    fileName: "images/software-fonts.jpg",
+    bentoSpan: "col-span-1 md:col-span-2 row-span-1", // Wide Tile
+    goal: "Document font pairings and software tools used across creative collateral.",
+    whatIDid: "Curated editorial font hierarchy and toolset documentation.",
+    result: "Add result here"
+  },
+  {
+    id: "brand-indima-spices",
+    title: "Indima Spices Price List",
+    category: "Branding",
+    fileName: "images/indima-pricelist.jpg",
+    bentoSpan: "col-span-1 md:col-span-2 row-span-1", // Wide Tile
+    goal: "Produce an organized, legible price menu for home-crafted spice products.",
+    whatIDid: "Formatted tables, packaging units, and clear pricing categories.",
+    result: "Add result here"
+  }
+];
+
+export const WORK_CATEGORIES = [
+  "All",
+  "Social Posts",
+  "Stories",
+  "Product",
+  "Events",
+  "Photography",
+  "Branding"
+] as const;
+
+// 6. SKILLS AND TOOLS SECTION
+export interface SkillGroup {
+  id: string;
+  title: string;
+  description: string;
+  items: string[];
+  accentColor: string;
+  iconName: string;
+}
+
+export const SKILLS_CONTENT: SkillGroup[] = [
+  {
+    id: "skill-content",
+    title: "Content",
+    description: "Hands-on execution of high-retention formats and compelling brand stories.",
+    items: ["Reels", "Captions", "Storytelling"],
+    accentColor: "#FF5C39", // coral
+    iconName: "Video"
+  },
+  {
+    id: "skill-strategy",
+    title: "Strategy",
+    description: "Translating brand goals into consistent organic audience engagement.",
+    items: ["Campaign planning", "Social media SEO", "Analytics basics"],
+    accentColor: "#6C4CF1", // violet
+    iconName: "TrendingUp"
+  },
+  {
+    id: "skill-tools",
+    title: "Tools",
+    description: "Proficiency across daily creator and platform applications (Canva is just one tool).",
+    items: ["Canva", "CapCut", "Instagram", "Meta Business Suite"],
+    accentColor: "#1B1B1F", // ink
+    iconName: "Wrench"
+  }
+];
+
+// 7. CONTACT & SOCIAL LINKS
+export const CONTACT_CONTENT = {
+  sectionLabel: "06 - CONTACT",
+  headingLead: "Let's build content people ",
+  headingKeyWord: "actually talk about.",
+  subline: "Open to digital marketing internships, entry-level social media roles, and creative brand collaborations in Bangalore or remote.",
+  name: "Poonam MR",
+  role: "Digital Media Marketing Intern & Content Creator",
+  location: "Rajajinagar, Bangalore, Karnataka, India",
+  email: "magajipoonam8@gmail.com",
+  phone: "+91 93809 85303",
+  whatsappUrl: "https://wa.me/919380985303",
+  instagramUrl: "https://instagram.com/poonammr", // Placeholder link
+  linkedinUrl: "https://linkedin.com/in/poonammr", // Placeholder link
+  resumeUrl: "resume.pdf",
+  resumeFileName: "Poonam_MR_Resume.pdf",
+  footerCopyright: "© 2026 Poonam MR · Bangalore, India"
+};

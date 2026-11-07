@@ -1,22 +1,53 @@
-# Poonam MR — Creative Studio & Digital Marketing Portfolio
+# Poonam MR — Digital Media Marketing Intern & Content Creator Portfolio
 
-A bold, modern, visual-first portfolio website for **Poonam MR** — Digital Marketing Intern, Content Creator, and Canva Designer from Bangalore.
+A modern, attractive, clean single-page Bento Grid portfolio website for **Poonam MR** — Digital Media Marketing Intern and Content Creator based in Bangalore.
 
 Built with **React 19**, **Vite**, **TypeScript**, **Tailwind CSS v4**, and **Lucide Icons**, configured for zero-configuration deployment on **Vercel** via GitHub.
 
 ---
 
-## 🌟 What This App Does
+## 🎨 Theme & Visual Architecture
 
-- **Dark Studio Visual Direction**: Deep charcoal background (`#0E0E12`), glowing glassmorphism cards, ambient neon orbs (hot pink `#FF4D8D`, electric yellow `#FFD84D`, violet `#8B5CF6`), and fluid typography.
-- **Hero Section**: Dynamic typing/rotating tagline (*Social Media Marketer / Content Creator / Canva Designer*), and a 3D tilted card stack (`feed-posts.jpg`, `poster.jpg`, `food.jpg`) that shifts with mouse parallax.
-- **Infinite Marquee**: Continuous ticker highlighting core competencies (*Social Media ✦ Canva ✦ Reels ✦ Captions ✦ Photography ✦ Branding ✦ Video Editing*).
-- **About Bento Grid**: Multi-sized glass tiles detailing background, production stats (*20+ posts and reels created*), Bangalore location, creative tools stack (*Canva, Adobe Photoshop, Adobe Illustrator, ChatGPT, Claude*), and internship availability.
-- **Work Showcase (The Star)**: Category filter pills (*All, Social Media, Photography, Adobe Projects, Brand*) with a responsive masonry grid of 17 high-resolution portfolio images and full-screen lightbox modal with mobile touch swipe, keyboard navigation, and soft-gradient fallback placeholders.
-- **Career Experience Timeline**: Glowing vertical timeline for *San Art Studio* and *Think Stationary*.
-- **Skills Cloud**: Interactive glowing neon pill chips.
-- **Education & Credentials**: Cards for *St. Claret College Autonomous (BBA 2025–2028)*, *Carmel Pre University College*, and *East West Academy*.
-- **Contact & Call to Action**: Tap-to-call (`+91 93809 85303`), tap-to-mail (`magajipoonam8@gmail.com`), WhatsApp direct chat, location, and resume download (`resume.pdf`).
+- **Exact Color Palette**:
+  - Cream Background: `#FFF8F0`
+  - Ink Accent / Work Background: `#1B1B1F`
+  - Main Accent Coral: `#FF5C39`
+  - Secondary Violet: `#6C4CF1`
+  - Highlight Lime: `#D9F76B`
+  - Card White: `#FFFFFF`
+  - Soft Border: `#EADFD3`
+- **Alternating Section Flow**:
+  - `Hero` (Cream)
+  - `01 - ABOUT` (White)
+  - `02 - EDUCATION` (Cream)
+  - `03 - EXPERIENCE` (White)
+  - `04 - WORK` (Dark Ink)
+  - `05 - SKILLS & TOOLS` (White)
+  - `06 - CONTACT` (Cream with Large Coral CTA Tile)
+- **Sharp Modern Shapes (`--radius: 6px`)**:
+  - 6px border radius on all cards, boxes, tiles, text boxes, buttons, tags/pills, image frames, and the lightbox modal.
+  - 1px solid border in soft border color (`#EADFD3`).
+  - Small flat offset shadow (`4px 4px 0 #1B1B1F`) on hover only.
+- **Typography**: Google Fonts `"Bricolage Grotesque"` (bold headings with `clamp(2.2rem, 6vw, 5rem)`) and `"Inter"` for high-contrast body text (16–18px).
+- **Small Friendly Details**:
+  - Rotated sticker-style badge: `"Open to internships"`
+  - Thick lime (`#D9F76B`) or coral (`#FF5C39`) underline on one key word per heading
+  - Pill-shaped category filter tags and rounded icon chips (Lucide icons only)
+
+---
+
+## 📝 Edit All Content in One Place: `src/content.ts`
+
+All editable text, headlines, education, experience, case studies, skills, and links are organized inside a single file:
+👉 **`src/content.ts`**
+
+- **Headline & Hero**: `HERO_CONTENT`
+- **About Narrative**: `ABOUT_CONTENT`
+- **Education Timeline**: `EDUCATION_CONTENT`
+- **Experience Timeline & Certifications**: `EXPERIENCE_CONTENT` & `CERTIFICATIONS_CONTENT`
+- **Work Case Studies (17 verified images)**: `PORTFOLIO_ITEMS` (with `goal`, `whatIDid`, and honest `result: "Add result here"`)
+- **Skills Bento (Content, Strategy, Tools)**: `SKILLS_CONTENT` (Canva is listed strictly as one tool in the Tools list)
+- **Contact & Social Links**: `CONTACT_CONTENT`
 
 ---
 
@@ -56,19 +87,13 @@ Built with **React 19**, **Vite**, **TypeScript**, **Tailwind CSS v4**, and **Lu
 
 ---
 
-## 🔑 Environment Variables
-
-No environment variables or API keys are required for this site.
-
----
-
 ## 🚀 How to Deploy to Vercel via GitHub
 
 1. **Initialize Git & commit all files**:
    ```bash
    git init
    git add .
-   git commit -m "feat: complete Poonam MR portfolio"
+   git commit -m "feat: complete Poonam MR sharp bento grid portfolio"
    git branch -M main
    ```
 2. **Push to your GitHub repository**:
@@ -80,4 +105,4 @@ No environment variables or API keys are required for this site.
    - Go to [vercel.com/new](https://vercel.com/new).
    - Select your GitHub repository.
    - Vercel automatically detects the Vite framework preset, `dist` output directory, and `npm run build` command.
-   - Click **Deploy**. The site will build and deploy instantly with zero configuration!
+   - Click **Deploy**. The site builds and deploys instantly with zero configuration!

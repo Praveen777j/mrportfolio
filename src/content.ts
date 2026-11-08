@@ -175,7 +175,7 @@ export interface PortfolioItem {
   title: string;
   category: "Social Posts" | "Stories" | "Product" | "Events" | "Photography" | "Branding";
   fileName: string;
-  bentoSpan: string; // CSS Grid span classes for responsive bento layout
+  bentoSpan?: string; // Optional CSS Grid span classes
   goal: string;
   whatIDid: string;
   result: string; // Honest placeholder: "Add result here"
@@ -427,31 +427,180 @@ export interface SkillGroup {
 export const SKILLS_CONTENT: SkillGroup[] = [
   {
     id: "skill-content",
-    title: "Content",
-    description: "Hands-on execution of high-retention formats and compelling brand stories.",
-    items: ["Reels", "Captions", "Storytelling"],
+    title: "Content & Video Production",
+    description: "Hands-on execution of high-retention short-form reels, visual carousels, and compelling brand narratives.",
+    items: ["Short-Form Reels", "Video Pacing & Hooks", "Audience Retention Storytelling"],
     accentColor: "#FF5C39", // coral
     iconName: "Video"
   },
   {
     id: "skill-strategy",
-    title: "Strategy",
-    description: "Translating brand goals into consistent organic audience engagement.",
-    items: ["Campaign planning", "Social media SEO", "Analytics basics"],
+    title: "Social Growth Strategy",
+    description: "Translating brand objectives into consistent organic discovery, calendar pacing, and community engagement.",
+    items: ["Campaign Pacing", "Social SEO & Keywords", "Audience Analytics Basics"],
     accentColor: "#6C4CF1", // violet
     iconName: "TrendingUp"
   },
   {
     id: "skill-tools",
-    title: "Tools",
-    description: "Proficiency across daily creator and platform applications (Canva is just one tool).",
-    items: ["Canva", "CapCut", "Instagram", "Meta Business Suite"],
-    accentColor: "#1B1B1F", // ink
+    title: "Creative Tools & Platforms",
+    description: "Proficiency across daily editing, design, discovery, and publishing tools (Canva is just one tool in the stack).",
+    items: ["CapCut", "Canva", "Pinterest", "Photoshop", "Meta Business Suite"],
+    accentColor: "#00F0FF", // cyan
     iconName: "Wrench"
   }
 ];
 
-// 7. CONTACT & SOCIAL LINKS
+// 6B. 3D STEPPED CREATIVE TOOLS & EDITING SUITE (CapCut, Canva, Pinterest, and more)
+export interface CreativeTool {
+  id: string;
+  name: string;
+  category: string;
+  pedestalLevel: number; // 1 to 6 (stepped height)
+  accentColor: string;
+  glowColor: string;
+  badge: string;
+  description: string;
+  keyWorkflows: string[];
+}
+
+export const CREATIVE_TOOLS_CONTENT = {
+  sectionLabel: "3D CREATIVE TOOLS STACK",
+  titleLead: "Editing & Production Suite on ",
+  titleKeyWord: "Stepped Pedestals",
+  subline: "From high-energy video pacing in CapCut to viral moodboarding in Pinterest and branded visual design in Canva — each tool occupies a dedicated tier in Poonam's daily creative pipeline.",
+  image: "/images/poonam-3d-tools-steps.jpg",
+  tools: [
+    {
+      id: "tool-capcut",
+      name: "CapCut",
+      category: "Video Editing & Motion",
+      pedestalLevel: 5,
+      accentColor: "#00F0FF",
+      glowColor: "rgba(0, 240, 255, 0.4)",
+      badge: "Reels & Shorts",
+      description: "Primary engine for dynamic video assembly: precise beat-matching, speed ramping, keyframe zooms, auto-captions with custom font styling, and atmospheric sound design.",
+      keyWorkflows: ["Beat-synced jump cuts & speed ramps", "B-roll text overlays & animated sound effects", "Retention-focused first 3-second pacing"]
+    },
+    {
+      id: "tool-canva",
+      name: "Canva Pro",
+      category: "Social Design & Layouts",
+      pedestalLevel: 4,
+      accentColor: "#7928CA",
+      glowColor: "rgba(121, 40, 202, 0.4)",
+      badge: "Graphics & Carousels",
+      description: "Fast-turnaround graphic staging: multi-slide educational carousels, promotional story templates, event posters, and brand asset consistency.",
+      keyWorkflows: ["Multi-slide Instagram carousels", "Brand kit consistency & typography", "Promotional banners & price lists"]
+    },
+    {
+      id: "tool-pinterest",
+      name: "Pinterest",
+      category: "Trend Curation & Moodboards",
+      pedestalLevel: 3,
+      accentColor: "#E60023",
+      glowColor: "rgba(230, 0, 35, 0.4)",
+      badge: "Inspiration & Aesthetics",
+      description: "Visual research and discovery hub: curating lighting moods, color palettes, editorial layout references, and seasonal trend forecasting before starting any shoot.",
+      keyWorkflows: ["Campaign moodboarding & aesthetic boards", "Color palette & lighting study", "Visual hook reference curation"]
+    },
+    {
+      id: "tool-photoshop",
+      name: "Photoshop & Lightroom",
+      category: "Image Grading & Retouching",
+      pedestalLevel: 5,
+      accentColor: "#31A8FF",
+      glowColor: "rgba(49, 168, 255, 0.4)",
+      badge: "Editorial Photo",
+      description: "Pro-level image refinement: RAW exposure correction, selective color grading, skin retouching, generative object removal, and crisp print preparation.",
+      keyWorkflows: ["RAW exposure & golden hour color grading", "Generative fill & background cleanup", "Print collateral bleed setup (cards, brochures)"]
+    },
+    {
+      id: "tool-meta",
+      name: "Instagram & Meta Suite",
+      category: "Distribution & Community",
+      pedestalLevel: 2,
+      accentColor: "#FF5C39",
+      glowColor: "rgba(255, 92, 57, 0.4)",
+      badge: "Publishing & Reach",
+      description: "Direct brand management: grid layout planning, scheduling prime-time feed releases, story polls and quiz stickers, and monitoring engagement velocity.",
+      keyWorkflows: ["Grid aesthetic & 3-column planning", "Meta Business Suite scheduling", "Story sticker interaction & community DMs"]
+    },
+    {
+      id: "tool-ai",
+      name: "Claude & ChatGPT",
+      category: "AI Ideation & Scripts",
+      pedestalLevel: 6,
+      accentColor: "#10B981",
+      glowColor: "rgba(16, 185, 129, 0.4)",
+      badge: "Copy & Strategy",
+      description: "Creative brainstorm co-pilot: developing 10+ hook variations per reel, scripting educational voiceovers, and analyzing audience search intent.",
+      keyWorkflows: ["Scroll-stopping reel hooks (0-3s)", "Captions tailored for comments & saves", "Content calendar brainstorm sprints"]
+    }
+  ]
+};
+
+// 7. AI CREATIVE WORKFLOW & IMAGE EDITING
+export const AI_WORKFLOW_CONTENT = {
+  sectionLabel: "AI CREATIVE WORKFLOW",
+  titleLead: "Picture Editing & Creative Direction with ",
+  titleKeyWord: "AI Tools",
+  subline: "Harnessing Claude, ChatGPT, Midjourney, Gemini, and Photoshop AI to edit pictures, test prompt variations, brainstorm viral hooks, and produce campaign assets faster.",
+  image: "/images/poonam-ai-workstation.jpg",
+  tools: [
+    {
+      name: "ChatGPT",
+      company: "OpenAI",
+      focus: "Hooks, captions & copy ideation",
+      color: "#10A37F",
+      badgeClass: "text-[#10A37F] bg-[#10A37F]/10 border-[#10A37F]/30"
+    },
+    {
+      name: "Claude",
+      company: "Anthropic",
+      focus: "Storytelling & strategy frameworks",
+      color: "#D97706",
+      badgeClass: "text-[#D97706] bg-[#D97706]/10 border-[#D97706]/30"
+    },
+    {
+      name: "Midjourney",
+      company: "AI Imaging",
+      focus: "High-concept visual moodboards",
+      color: "#6366F1",
+      badgeClass: "text-[#6366F1] bg-[#6366F1]/10 border-[#6366F1]/30"
+    },
+    {
+      name: "Gemini",
+      company: "Google",
+      focus: "Visual analysis & search trends",
+      color: "#3B82F6",
+      badgeClass: "text-[#3B82F6] bg-[#3B82F6]/10 border-[#3B82F6]/30"
+    },
+    {
+      name: "Photoshop AI",
+      company: "Adobe Firefly",
+      focus: "Generative fill & photo retouching",
+      color: "#0284C7",
+      badgeClass: "text-[#0284C7] bg-[#0284C7]/10 border-[#0284C7]/30"
+    }
+  ],
+  capabilities: [
+    {
+      title: "AI Picture Editing & Generative Retouching",
+      description: "Using Photoshop Generative Fill and AI enhancers to expand backgrounds, clean complex textures, remove unwanted objects, and produce crisp social creatives."
+    },
+    {
+      title: "Prompt Engineering & Visual Concepting",
+      description: "Drafting descriptive visual prompts with lighting, composition, lens parameters, and mood direction to visualize campaign concepts before production."
+    },
+    {
+      title: "Hook & Copy Synthesis (Claude & ChatGPT)",
+      description: "Rapidly generating and testing 10+ hook variations per reel, crafting audience-tailored captions, and analyzing high-retention social content formats."
+    }
+  ]
+};
+
+// 8. CONTACT & SOCIAL LINKS
 export const CONTACT_CONTENT = {
   sectionLabel: "06 - CONTACT",
   headingLead: "Let's build content people ",

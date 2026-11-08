@@ -8,6 +8,8 @@ import {
   PORTFOLIO_ITEMS,
   WORK_CATEGORIES,
   SKILLS_CONTENT,
+  CREATIVE_TOOLS_CONTENT,
+  AI_WORKFLOW_CONTENT,
   CONTACT_CONTENT,
   PortfolioItem
 } from './content';
@@ -31,7 +33,9 @@ import {
   Wrench,
   Award,
   CheckCircle2,
-  Maximize2
+  Maximize2,
+  Layers,
+  Palette
 } from 'lucide-react';
 
 // Helper to normalize image paths
@@ -46,6 +50,7 @@ export default function App() {
   const [activeCategory, setActiveCategory] = useState<string>('All');
   const [activeModalItem, setActiveModalItem] = useState<PortfolioItem | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activePedestalTool, setActivePedestalTool] = useState<string>('tool-capcut');
 
   // Filtered portfolio list
   const filteredPortfolio = PORTFOLIO_ITEMS.filter((item) => {
@@ -104,32 +109,123 @@ export default function App() {
     }
   };
 
+  // AI Tool SVG Logos
+  const ChatGptIcon = ({ className = "w-4 h-4" }: { className?: string }) => (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M22.28 9.82a5.98 5.98 0 0 0-.52-4.91 6.05 6.05 0 0 0-6.5-2.9 6.07 6.07 0 0 0-4.28 2.17 5.98 5.98 0 0 0-4 2.9 6.05 6.05 0 0 0 .74 7.1 5.98 5.98 0 0 0 .51 4.91 6.05 6.05 0 0 0 6.51 2.9 5.98 5.98 0 0 0 3.99 2.01 6.06 6.06 0 0 0 5.77-4.21 5.99 5.99 0 0 0 4-2.9 6.06 6.06 0 0 0-.74-7.07zm-9.02 12.61a4.48 4.48 0 0 1-2.88-1.04l.14-.08 4.78-2.76c.24-.14.39-.4.39-.68v-6.74l2.02 1.17c.02.01.04.03.04.05v5.58a4.5 4.5 0 0 1-4.49 4.5zm-9.66-4.13a4.47 4.47 0 0 1-.53-3.01l.14.08 4.78 2.76c.24.14.54.14.78 0l5.84-3.37v2.33c0 .03-.01.05-.03.06L9.74 19.95a4.5 4.5 0 0 1-6.14-1.65zM2.34 7.9a4.48 4.48 0 0 1 2.37-1.97v5.67c0 .28.15.54.39.68l5.81 3.35-2.02 1.17c-.02 0-.05 0-.07 0l-4.83-2.79A4.5 4.5 0 0 1 2.34 7.9zm16.6 3.85L13.1 8.36l2.02-1.16c.02 0 .05 0 .07 0l4.83 2.79a4.49 4.49 0 0 1-.68 8.1v-5.68a.79.79 0 0 0-.4-.67zm2.01-3.02l-.14-.09-4.77-2.78a.78.78 0 0 0-.79 0L9.41 9.23V6.9a.07.07 0 0 1 .03-.06l4.83-2.79a4.5 4.5 0 0 1 6.68 4.67zm-12.64 4.14l-2.02-1.17a.08.08 0 0 1-.04-.05V6.07a4.5 4.5 0 0 1 7.38-3.46l-.14.08-4.78 2.76a.79.79 0 0 0-.4.68zm1.1-2.37l2.6-1.5 2.61 1.5v3l-2.61 1.5-2.6-1.5z"/>
+    </svg>
+  );
+
+  const ClaudeIcon = ({ className = "w-4 h-4" }: { className?: string }) => (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M13.82 2.5a1.2 1.2 0 0 0-1.12.78l-1.9 5.08-4.9-2.37a1.2 1.2 0 0 0-1.63.53 1.2 1.2 0 0 0 .53 1.63l4.9 2.37-4.13 3.52a1.2 1.2 0 0 0 .15 1.71 1.2 1.2 0 0 0 1.71-.15l4.13-3.52.48 5.43a1.2 1.2 0 0 0 1.2 1.09 1.2 1.2 0 0 0 1.2-1.09l.48-5.43 4.13 3.52a1.2 1.2 0 0 0 1.71.15 1.2 1.2 0 0 0 .15-1.71l-4.13-3.52 4.9-2.37a1.2 1.2 0 0 0 .53-1.63 1.2 1.2 0 0 0-1.63-.53l-4.9 2.37-1.9-5.08a1.2 1.2 0 0 0-1.12-.78z"/>
+    </svg>
+  );
+
+  const GeminiIcon = ({ className = "w-4 h-4" }: { className?: string }) => (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 24C12 17.373 6.627 12 0 12c6.627 0 12-5.373 12-12 0 6.627 5.373 12 12 12-6.627 0-12 5.373-12 12z"/>
+    </svg>
+  );
+
+  const MidjourneyIcon = ({ className = "w-4 h-4" }: { className?: string }) => (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M14.6 2.4c-2.4 2.8-5.7 7.2-6.6 8.7-1.3 2.1-1.6 3.5-1.1 4.5.6 1.3 2.1 1.8 3.8 1.2 1.9-.7 4.2-2.8 5.5-4.8 1.4-2.1 2.2-4.6 2.1-6.1-.1-1.6-1.3-3.1-3.7-3.5zm-5.4 12.3c-.8-.2-1.5-.7-1.7-1.3-.3-.7 0-1.7.9-3.2 1-1.6 3.5-4.9 5.4-7.2 1.5.5 2.2 1.4 2.2 2.3 0 1.1-.7 3.1-1.9 4.9-1.3 1.9-3.2 3.8-4.9 4.5zM3.5 17.2c2.1 1.8 5.7 2.8 9.5 2.5 3.8-.3 7-1.9 8.5-4 .4-.6.6-1.2.6-1.7 0-.7-.4-1.3-1.1-1.7-.5-.3-1.2-.4-1.9-.3-1.2.2-2.5.8-3.7 1.6-1.5 1-2.9 2.3-4.3 2.4-1.3.1-2.7-.9-3.9-1.9-.9-.7-1.8-1.5-2.7-1.8-.6-.2-1.2-.1-1.6.2-.5.4-.8 1-.7 1.7.1.6.4 1.1.9 1.5l.7.5z"/>
+    </svg>
+  );
+
+  const PhotoshopAiIcon = ({ className = "w-4 h-4" }: { className?: string }) => (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M3 3h18a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm2.5 4.5v9h2.3v-3.3h1.8c2.2 0 3.7-1.2 3.7-2.9 0-1.8-1.5-2.8-3.7-2.8H5.5zm2.3 1.8h1.6c1.1 0 1.7.5 1.7 1.1 0 .6-.6 1.1-1.7 1.1H7.8V9.3zm8.3 2.8c-1.5 0-2.3.8-2.3 1.9 0 1.2.8 1.7 2.1 2 1.1.2 1.5.5 1.5 1 0 .6-.6 1-1.5 1-1 0-1.7-.4-2-1.2l-1.5.9c.5 1.4 1.8 2.1 3.5 2.1 2 0 3.4-.9 3.4-2.5 0-1.3-.9-1.9-2.3-2.2-1-.2-1.4-.4-1.4-.8 0-.5.5-.8 1.2-.8.8 0 1.4.3 1.7.9l1.4-.9c-.6-1.1-1.7-1.4-2.8-1.4z"/>
+    </svg>
+  );
+
+  // Creative Tools Logos (CapCut, Canva, Pinterest)
+  const CapCutIcon = ({ className = "w-5 h-5" }: { className?: string }) => (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M4 6.5C4 5.12 5.12 4 6.5 4h3.2L12 8.5 14.3 4h3.2C18.88 4 20 5.12 20 6.5v2.2L12 14.5 4 8.7V6.5zm0 11C4 18.88 5.12 20 6.5 20h3.2L12 15.5 14.3 20h3.2c1.38 0 2.5-1.12 2.5-2.5v-2.2L12 9.5 4 15.3v2.2z"/>
+    </svg>
+  );
+
+  const CanvaIcon = ({ className = "w-5 h-5" }: { className?: string }) => (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm2.85 14.6c-.95.42-2.02.6-3.15.6-3.6 0-5.7-2.4-5.7-5.9 0-3.7 2.4-6.3 6.1-6.3 1.3 0 2.3.3 2.9.7l-.8 1.9c-.5-.3-1.2-.5-2.1-.5-2.4 0-3.9 1.7-3.9 4.1 0 2.3 1.3 3.9 3.7 3.9.7 0 1.4-.1 1.9-.4l.95 1.9z"/>
+    </svg>
+  );
+
+  const PinterestIcon = ({ className = "w-5 h-5" }: { className?: string }) => (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 0C5.37 0 0 5.37 0 12c0 5.08 3.2 9.42 7.7 11.1-.11-.94-.21-2.39.04-3.42.23-.98 1.49-6.32 1.49-6.32s-.38-.76-.38-1.88c0-1.76 1.02-3.08 2.29-3.08 1.08 0 1.6.81 1.6 1.78 0 1.09-.69 2.71-1.05 4.22-.3 1.26.63 2.29 1.88 2.29 2.25 0 3.98-2.38 3.98-5.81 0-3.04-2.18-5.16-5.3-5.16-3.61 0-5.73 2.71-5.73 5.5 0 1.09.42 2.26.94 2.89.1.13.12.24.09.37-.1.41-.32 1.28-.36 1.46-.06.24-.19.29-.44.17-1.63-.76-2.65-3.14-2.65-5.06 0-4.12 3-7.9 8.64-7.9 4.54 0 8.06 3.24 8.06 7.56 0 4.51-2.84 8.14-6.79 8.14-1.33 0-2.57-.69-3-.15l-.81 3.1c-.29 1.13-1.09 2.54-1.62 3.42 1.27.39 2.62.61 4.02.61 6.63 0 12-5.37 12-12S18.63 0 12 0z"/>
+    </svg>
+  );
+
+  const renderAiIcon = (name: string, className = "w-4 h-4") => {
+    switch (name) {
+      case 'ChatGPT':
+        return <ChatGptIcon className={className} />;
+      case 'Claude':
+        return <ClaudeIcon className={className} />;
+      case 'Gemini':
+        return <GeminiIcon className={className} />;
+      case 'Midjourney':
+        return <MidjourneyIcon className={className} />;
+      case 'Photoshop AI':
+        return <PhotoshopAiIcon className={className} />;
+      default:
+        return <Sparkles className={className} />;
+    }
+  };
+
+  const renderToolBrandIcon = (toolId: string, className = "w-5 h-5") => {
+    switch (toolId) {
+      case 'tool-capcut':
+        return <CapCutIcon className={className} />;
+      case 'tool-canva':
+        return <CanvaIcon className={className} />;
+      case 'tool-pinterest':
+        return <PinterestIcon className={className} />;
+      case 'tool-photoshop':
+        return <PhotoshopAiIcon className={className} />;
+      case 'tool-meta':
+        return <Instagram className={className} />;
+      case 'tool-ai':
+        return <ChatGptIcon className={className} />;
+      default:
+        return <Sparkles className={className} />;
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-[#FFF8F0] text-[#1B1B1F] selection:bg-[#FF5C39] selection:text-white">
+    <div className="min-h-screen bg-[#08090E] text-[#F0F2FA] selection:bg-[#00F0FF] selection:text-[#08090E]">
       {/* ==========================================================================
-           STICKY NAVBAR (Cream Background, Anchor Links & Resume Button)
+           STICKY NAVBAR (3D Dark Glass Background, Anchor Links & Glowing Resume Button)
            ========================================================================== */}
-      <header className="sticky top-0 z-40 bg-[#FFF8F0]/92 backdrop-blur-md border-b border-[#EADFD3] w-full">
+      <header className="sticky top-0 z-40 bg-[#08090E]/90 backdrop-blur-md border-b border-white/10 w-full">
         <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 h-[76px] flex items-center justify-between gap-6">
-          {/* Brand Wordmark with 6px radius */}
+          {/* Brand Wordmark with 3D Avatar */}
           <a
             href="#hero"
-            className="flex items-center gap-2.5 font-display text-xl font-bold text-[#1B1B1F] shrink-0"
+            className="flex items-center gap-3 font-display text-lg sm:text-xl font-bold text-white shrink-0 group"
           >
-            <span className="w-8 h-8 rounded-[var(--radius)] bg-[#FF5C39] text-white flex items-center justify-center font-black text-sm border border-[#1B1B1F]">
-              P
-            </span>
-            <span>Poonam MR</span>
+            <div className="relative w-9 h-9 rounded-[var(--radius)] overflow-hidden border border-white/20 shadow-[0_0_15px_rgba(0,240,255,0.3)] bg-[#14151B] transition-transform group-hover:scale-105">
+              <img
+                src="/images/poonam-3d-avatar.jpg"
+                alt="Poonam MR"
+                className="w-full h-full object-cover"
+              />
+              <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-[#00F0FF] border-2 border-[#08090E] shadow-[0_0_8px_#00F0FF]" />
+            </div>
+            <span className="group-hover:text-[#00F0FF] transition-colors">Poonam MR</span>
           </a>
 
           {/* Desktop Nav Links */}
-          <nav className="hidden md:flex items-center gap-7 text-sm font-semibold text-[#5A5A66]">
-            <a href="#about" className="hover:text-[#FF5C39] transition-colors">About</a>
-            <a href="#education" className="hover:text-[#FF5C39] transition-colors">Education</a>
-            <a href="#experience" className="hover:text-[#FF5C39] transition-colors">Experience</a>
-            <a href="#work" className="hover:text-[#FF5C39] transition-colors">Work</a>
-            <a href="#skills" className="hover:text-[#FF5C39] transition-colors">Skills & Tools</a>
-            <a href="#contact" className="hover:text-[#FF5C39] transition-colors">Contact</a>
+          <nav className="hidden md:flex items-center gap-7 text-sm font-semibold text-[#9BA1BA]">
+            <a href="#about" className="hover:text-[#00F0FF] transition-colors">About</a>
+            <a href="#education" className="hover:text-[#00F0FF] transition-colors">Education</a>
+            <a href="#experience" className="hover:text-[#00F0FF] transition-colors">Experience</a>
+            <a href="#work" className="hover:text-[#00F0FF] transition-colors">Work</a>
+            <a href="#skills" className="hover:text-[#00F0FF] transition-colors">Skills & Tools</a>
+            <a href="#contact" className="hover:text-[#00F0FF] transition-colors">Contact</a>
           </nav>
 
           {/* Primary Action Button */}
@@ -149,7 +245,7 @@ export default function App() {
           {/* Mobile Menu Hamburger */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden w-11 h-11 rounded-[var(--radius)] bg-white border border-[#EADFD3] flex items-center justify-center text-[#1B1B1F]"
+            className="md:hidden w-11 h-11 rounded-[var(--radius)] bg-white/10 border border-white/15 flex items-center justify-center text-white"
             aria-label="Toggle navigation menu"
             aria-expanded={mobileMenuOpen}
           >
@@ -159,14 +255,14 @@ export default function App() {
 
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
-          <div className="md:hidden fixed top-[76px] inset-x-0 bg-[#FFF8F0]/98 backdrop-blur-xl border-b border-[#EADFD3] p-6 z-50 shadow-xl">
-            <nav className="flex flex-col gap-3 text-lg font-bold text-[#1B1B1F] mb-6">
-              <a href="#about" onClick={() => setMobileMenuOpen(false)} className="py-2 border-b border-[#EADFD3]/50">About</a>
-              <a href="#education" onClick={() => setMobileMenuOpen(false)} className="py-2 border-b border-[#EADFD3]/50">Education</a>
-              <a href="#experience" onClick={() => setMobileMenuOpen(false)} className="py-2 border-b border-[#EADFD3]/50">Experience</a>
-              <a href="#work" onClick={() => setMobileMenuOpen(false)} className="py-2 border-b border-[#EADFD3]/50">Work</a>
-              <a href="#skills" onClick={() => setMobileMenuOpen(false)} className="py-2 border-b border-[#EADFD3]/50">Skills & Tools</a>
-              <a href="#contact" onClick={() => setMobileMenuOpen(false)} className="py-2 border-b border-[#EADFD3]/50">Contact</a>
+          <div className="md:hidden fixed top-[76px] inset-x-0 bg-[#0D101C]/98 backdrop-blur-xl border-b border-white/15 p-6 z-50 shadow-2xl">
+            <nav className="flex flex-col gap-3 text-lg font-bold text-white mb-6">
+              <a href="#about" onClick={() => setMobileMenuOpen(false)} className="py-2 border-b border-white/10 hover:text-[#00F0FF]">About</a>
+              <a href="#education" onClick={() => setMobileMenuOpen(false)} className="py-2 border-b border-white/10 hover:text-[#00F0FF]">Education</a>
+              <a href="#experience" onClick={() => setMobileMenuOpen(false)} className="py-2 border-b border-white/10 hover:text-[#00F0FF]">Experience</a>
+              <a href="#work" onClick={() => setMobileMenuOpen(false)} className="py-2 border-b border-white/10 hover:text-[#00F0FF]">Work</a>
+              <a href="#skills" onClick={() => setMobileMenuOpen(false)} className="py-2 border-b border-white/10 hover:text-[#00F0FF]">Skills & Tools</a>
+              <a href="#contact" onClick={() => setMobileMenuOpen(false)} className="py-2 border-b border-white/10 hover:text-[#00F0FF]">Contact</a>
             </nav>
             <div className="flex flex-col gap-3">
               <a
@@ -187,134 +283,116 @@ export default function App() {
 
       <main className="w-full">
         {/* ==========================================================================
-             1. HERO SECTION (Cream Background #FFF8F0, >=96px vertical padding)
+             1. HERO SECTION (3D Theme Inspired by Reference)
              ========================================================================== */}
-        <section id="hero" className="section-cream section-padding border-b border-[#EADFD3]">
-          <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
-              
-              {/* Left Column: Headline, Personality Badge & Buttons (7 Cols) */}
-              <div className="lg:col-span-7 flex flex-col items-start">
-                
-                {/* Friendly Sticker-style Rotated Badge (6px radius) */}
-                <div className="mb-6">
-                  <span className="sticker-badge">
-                    <span className="w-2 h-2 rounded-full bg-[#1B1B1F] animate-pulse" />
-                    {HERO_CONTENT.statusBadgeText} · {HERO_CONTENT.statusLocation}
-                  </span>
-                </div>
+        <section id="hero" className="relative bg-[#0B0C10] text-white overflow-hidden border-b border-white/10 section-padding !pt-12 !pb-20 sm:!pt-16 sm:!pb-24">
+          {/* Subtle Ambient Backlight and Lighting Waves */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] sm:w-[850px] h-[350px] sm:h-[450px] bg-gradient-to-tr from-[#6C4CF1]/20 via-[#FF5C39]/20 to-transparent rounded-full blur-[110px] opacity-80" />
+            <div className="absolute -bottom-10 inset-x-0 h-32 bg-gradient-to-t from-[#0B0C10] to-transparent z-10" />
+          </div>
 
-                {/* Main Headline with Thick Coral Underline on "actually engage" */}
-                <h1 className="heading-fluid text-[#1B1B1F] mb-6">
-                  {HERO_CONTENT.headlineStart}
-                  <span className="underline-coral text-[#FF5C39]">
-                    {HERO_CONTENT.headlineKeyWord}
-                  </span>
-                  {HERO_CONTENT.headlineEnd}
-                </h1>
-
-                {/* Subline */}
-                <p className="text-lg sm:text-xl text-[#5A5A66] font-medium leading-relaxed mb-8 max-w-xl">
-                  {HERO_CONTENT.subline}
-                </p>
-
-                {/* Buttons: "See my work" and "Download resume" */}
-                <div className="flex flex-wrap items-center gap-4">
-                  <a href="#work" className="btn-primary">
-                    {HERO_CONTENT.primaryCtaText}
-                    <ArrowRight size={18} />
-                  </a>
-                  <a
-                    href={CONTACT_CONTENT.resumeUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    download={CONTACT_CONTENT.resumeFileName}
-                    className="btn-secondary"
-                  >
-                    <Download size={18} />
-                    {HERO_CONTENT.secondaryCtaText}
-                  </a>
-                </div>
-              </div>
-
-              {/* Right Column: Hero Bento Cluster (5 Cols) */}
-              <div className="lg:col-span-5 w-full">
-                <div className="grid grid-cols-2 gap-3.5 sm:gap-4">
-                  {/* Tile 1: Top Campaign Creative */}
-                  <a
-                    href="#work"
-                    className="group relative h-40 sm:h-48 rounded-[var(--radius)] overflow-hidden border border-[#EADFD3] hover:border-[#FF5C39] transition-all bg-[#1B1B1F] shadow-none hover:shadow-[4px_4px_0_#1B1B1F]"
-                  >
-                    <img
-                      src="/images/feed-posts.jpg"
-                      alt="Campaign Creative"
-                      className="w-full h-full object-cover vibrant-img group-hover:scale-105 transition-transform duration-300"
-                    />
-                    <span className="absolute bottom-2.5 left-2.5 text-[10px] font-extrabold uppercase tracking-wider bg-[#1B1B1F]/90 text-white px-2.5 py-1 rounded-[var(--radius)] border border-white/20 backdrop-blur-sm">
-                      Campaigns
-                    </span>
-                  </a>
-
-                  {/* Tile 2: Top Photography Shot */}
-                  <a
-                    href="#work"
-                    className="group relative h-40 sm:h-48 rounded-[var(--radius)] overflow-hidden border border-[#EADFD3] hover:border-[#FF5C39] transition-all bg-[#1B1B1F] shadow-none hover:shadow-[4px_4px_0_#1B1B1F]"
-                  >
-                    <img
-                      src="/images/wildflowers-botanical.jpg"
-                      alt="Photography Macro"
-                      className="w-full h-full object-cover vibrant-img group-hover:scale-105 transition-transform duration-300"
-                    />
-                    <span className="absolute bottom-2.5 left-2.5 text-[10px] font-extrabold uppercase tracking-wider bg-[#1B1B1F]/90 text-white px-2.5 py-1 rounded-[var(--radius)] border border-white/20 backdrop-blur-sm">
-                      Visuals
-                    </span>
-                  </a>
-
-                  {/* Tile 3: Internship Ready Card */}
-                  <div className="bento-card-light !p-4 sm:!p-5 flex flex-col justify-between border border-[#EADFD3]">
-                    <div className="flex items-center gap-1.5 text-xs font-bold text-[#FF5C39]">
-                      <span className="w-2 h-2 rounded-full bg-[#FF5C39] animate-ping" />
-                      <span>Available</span>
-                    </div>
-                    <div>
-                      <h4 className="font-display text-sm sm:text-base font-bold text-[#1B1B1F] leading-tight mb-0.5">
-                        Internship Ready
-                      </h4>
-                      <p className="text-[11px] text-[#5A5A66]">
-                        Bangalore · Immediate
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Tile 4: Core Skills Focus */}
-                  <div className="bento-card-light !p-4 sm:!p-5 flex flex-col justify-between border border-[#EADFD3]">
-                    <span className="text-[10px] font-black uppercase tracking-wider text-[#6C4CF1]">
-                      Focus Stack
-                    </span>
-                    <div className="flex flex-wrap gap-1.5">
-                      <span className="text-[10px] font-bold bg-[#6C4CF1]/10 text-[#6C4CF1] px-2 py-0.5 rounded-[var(--radius)]">
-                        Reels
-                      </span>
-                      <span className="text-[10px] font-bold bg-[#FF5C39]/10 text-[#FF5C39] px-2 py-0.5 rounded-[var(--radius)]">
-                        Strategy
-                      </span>
-                      <span className="text-[10px] font-bold bg-[#1B1B1F]/10 text-[#1B1B1F] px-2 py-0.5 rounded-[var(--radius)]">
-                        Content
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
+          <div className="relative max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 z-10">
+            {/* Top Status Badge */}
+            <div className="flex justify-center mb-5 sm:mb-6">
+              <span className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-[var(--radius)] bg-white/10 text-white border border-white/15 text-xs font-bold tracking-wide backdrop-blur-md">
+                <span className="w-2 h-2 rounded-full bg-[#D9F76B] animate-pulse" />
+                <span>{HERO_CONTENT.statusBadgeText}</span>
+                <span className="text-white/40">·</span>
+                <span className="text-[#D9F76B]">{HERO_CONTENT.statusLocation}</span>
+              </span>
             </div>
+
+            {/* Monumental 3D Style Headline: HI, I'M POONAM MR */}
+            <div className="text-center mb-4 sm:mb-6">
+              <h1 className="hero-3d-title text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight font-black text-transparent bg-clip-text bg-gradient-to-b from-white via-[#F0F2FA] to-[#989CAF] select-none">
+                HI, I'M POONAM MR
+              </h1>
+            </div>
+
+            {/* Central 3D Avatar Head */}
+            <div className="flex justify-center items-center my-4 sm:my-8 relative">
+              {/* Backlight halo */}
+              <div className="absolute w-60 h-60 sm:w-80 sm:h-80 rounded-full bg-gradient-to-b from-[#FF5C39]/35 to-[#6C4CF1]/35 blur-2xl pointer-events-none" />
+
+              <div className="relative group cursor-pointer animate-float">
+                <div className="w-52 h-52 sm:w-68 sm:h-68 md:w-80 md:h-80 rounded-full overflow-hidden border-4 border-white/20 shadow-[0_20px_60px_rgba(0,0,0,0.85),0_0_40px_rgba(108,76,241,0.4)] transition-transform duration-500 group-hover:scale-105 group-hover:border-[#FF5C39] bg-[#14151B]">
+                  <img
+                    src="/images/poonam-3d-avatar.jpg"
+                    alt="Poonam MR 3D Avatar"
+                    className="w-full h-full object-cover vibrant-img"
+                    loading="eager"
+                  />
+                </div>
+                
+                {/* 3D Character badge */}
+                <div className="absolute -bottom-2 right-4 sm:right-6 px-3.5 py-1.5 rounded-[var(--radius)] bg-[#1B1B1F]/90 text-white border border-white/20 text-xs font-bold flex items-center gap-1.5 shadow-xl backdrop-blur-md">
+                  <span className="text-[#D9F76B]">✨</span>
+                  <span>Content Creator</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom Meta & Action Bar (Matching screenshot bottom layout) */}
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-end mt-8 sm:mt-12 pt-8 border-t border-white/10">
+              {/* Left Column: Creator Statement */}
+              <div className="md:col-span-7 flex flex-col gap-2">
+                <span className="text-xs font-extrabold uppercase tracking-widest text-[#FF5C39]">
+                  Digital Media Marketing Intern & Content Creator
+                </span>
+                <p className="font-display text-xl sm:text-2xl lg:text-3xl font-extrabold text-white leading-snug">
+                  I turn ideas into content people{' '}
+                  <span className="underline-coral text-[#FF5C39]">
+                    actually engage
+                  </span>{' '}
+                  with.
+                </p>
+                <p className="text-sm sm:text-base text-[#A8ABB9] max-w-xl mt-1">
+                  BBA student & creator in Bangalore specializing in short-form reels, social campaigns, brand storytelling, and high-retention visual assets.
+                </p>
+              </div>
+
+              {/* Right Column: CTA Buttons with Glowing Contact Me Pill */}
+              <div className="md:col-span-5 flex flex-wrap items-center md:justify-end gap-3.5">
+                <a
+                  href="#contact"
+                  className="btn-glow-pill"
+                >
+                  <Sparkles size={16} />
+                  <span>CONTACT ME</span>
+                </a>
+
+                <a
+                  href="#work"
+                  className="px-5 py-3 rounded-[var(--radius)] bg-white/10 hover:bg-white/20 text-white text-sm font-bold border border-white/20 transition-all flex items-center gap-2"
+                >
+                  <span>SEE MY WORK</span>
+                  <ArrowRight size={16} />
+                </a>
+
+                <a
+                  href={CONTACT_CONTENT.resumeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  download={CONTACT_CONTENT.resumeFileName}
+                  className="px-5 py-3 rounded-[var(--radius)] bg-white text-[#1B1B1F] hover:bg-[#F2F2F6] text-sm font-bold border border-white transition-all flex items-center gap-2"
+                >
+                  <Download size={16} />
+                  <span>RESUME</span>
+                </a>
+              </div>
+            </div>
+
           </div>
         </section>
 
         {/* ==========================================================================
-             2. ABOUT SECTION (White Background #FFFFFF, >=96px vertical padding)
+             2. ABOUT SECTION (3D Dark Surface #0E1220, Spacious Layout)
              ========================================================================== */}
-        <section id="about" className="section-white section-padding border-b border-[#EADFD3]">
-          <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+        <section id="about" className="section-white section-padding border-b border-white/10 relative overflow-hidden">
+          <div className="absolute inset-0 pointer-events-none bg-grid-cyber opacity-35" />
+          
+          <div className="relative max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 z-10">
             
             {/* Section Label */}
             <div className="section-badge-coral">
@@ -322,48 +400,66 @@ export default function App() {
             </div>
 
             {/* Heading with Thick Lime Underline */}
-            <h2 className="heading-fluid text-[#1B1B1F] mb-10">
+            <h2 className="heading-fluid text-white mb-10 max-w-3xl">
               {ABOUT_CONTENT.headingLead}
-              <span className="underline-lime text-[#1B1B1F]">
+              <span className="underline-lime text-white">
                 {ABOUT_CONTENT.headingKeyWord}
               </span>
             </h2>
 
             {/* Bento Layout: Main Bio + 3 Small Highlight Tiles */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
               
               {/* Bio Narrative Card (7 Cols) */}
-              <div className="lg:col-span-7 bento-card-light flex flex-col justify-between">
+              <div className="lg:col-span-7 bento-card-light flex flex-col justify-between p-7 sm:p-9 md:p-10">
                 <div>
-                  <h3 className="font-display text-2xl sm:text-3xl font-extrabold text-[#1B1B1F] leading-snug mb-5" style={{ textWrap: 'balance' }}>
-                    Digital Media Marketing Intern & Content Creator based in Bangalore.
+                  <div className="flex items-center gap-4 mb-8 pb-6 border-b border-white/10">
+                    <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-[#00F0FF] shadow-[0_0_20px_rgba(0,240,255,0.4)] bg-[#14151B] shrink-0">
+                      <img
+                        src="/images/poonam-3d-avatar.jpg"
+                        alt="Poonam MR"
+                        className="w-full h-full object-cover vibrant-img"
+                      />
+                    </div>
+                    <div>
+                      <h3 className="font-display text-xl sm:text-2xl font-extrabold text-white leading-tight">
+                        Poonam MR
+                      </h3>
+                      <p className="text-xs font-extrabold text-[#FF5C39] uppercase tracking-wider mt-0.5">
+                        Digital Media Marketing Intern & Content Creator
+                      </p>
+                    </div>
+                  </div>
+
+                  <h3 className="font-display text-xl sm:text-2xl font-extrabold text-white leading-snug mb-6 max-w-xl" style={{ textWrap: 'balance' }}>
+                    Fresher marketer & visual content creator based in Bangalore.
                   </h3>
 
-                  <div className="flex flex-col gap-4 text-base sm:text-lg text-[#5A5A66] leading-relaxed">
+                  <div className="flex flex-col gap-5 text-base sm:text-lg text-[#CAD0E6] leading-relaxed max-w-2xl">
                     {ABOUT_CONTENT.bioParagraphs.map((para, idx) => (
                       <p key={idx}>{para}</p>
                     ))}
                   </div>
                 </div>
 
-                <div className="pt-6 mt-6 border-t border-[#EADFD3] flex items-center gap-2 text-sm font-semibold text-[#5A5A66]">
+                <div className="pt-6 mt-8 border-t border-white/10 flex items-center gap-2 text-sm font-semibold text-[#9BA1BA]">
                   <MapPin size={18} className="text-[#FF5C39]" />
                   <span>{CONTACT_CONTENT.location}</span>
                 </div>
               </div>
 
               {/* 3 Highlight Tiles (5 Cols) */}
-              <div className="lg:col-span-5 flex flex-col gap-4 justify-between">
+              <div className="lg:col-span-5 flex flex-col gap-5 justify-between">
                 {ABOUT_CONTENT.highlightTiles.map((tile, idx) => (
-                  <div key={tile.id} className="bento-card-light flex-1 flex items-start gap-4">
+                  <div key={tile.id} className="bento-card-light flex-1 flex items-start gap-5 p-6 sm:p-7">
                     <div className={idx === 0 ? "icon-chip-coral" : idx === 1 ? "icon-chip-violet" : "icon-chip-lime"}>
                       {renderIcon(tile.iconName)}
                     </div>
                     <div>
-                      <h4 className="font-display text-lg font-bold text-[#1B1B1F] mb-1">
+                      <h4 className="font-display text-lg font-bold text-white mb-2">
                         {tile.title}
                       </h4>
-                      <p className="text-sm text-[#5A5A66] leading-relaxed">
+                      <p className="text-sm text-[#CAD0E6] leading-relaxed">
                         {tile.description}
                       </p>
                     </div>
@@ -377,10 +473,12 @@ export default function App() {
         </section>
 
         {/* ==========================================================================
-             3. EDUCATION SECTION (Cream Background #FFF8F0, >=96px vertical padding)
+             3. EDUCATION SECTION (3D Deep Surface #0B0E18, Spacious Timeline)
              ========================================================================== */}
-        <section id="education" className="section-cream section-padding border-b border-[#EADFD3]">
-          <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+        <section id="education" className="section-cream section-padding border-b border-white/10 relative overflow-hidden">
+          <div className="absolute inset-0 pointer-events-none bg-grid-cyber opacity-25" />
+
+          <div className="relative max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 z-10">
             
             {/* Section Label */}
             <div className="section-badge-violet">
@@ -388,14 +486,14 @@ export default function App() {
             </div>
 
             {/* Heading with Thick Coral Underline */}
-            <h2 className="heading-fluid text-[#1B1B1F] mb-4">
+            <h2 className="heading-fluid text-white mb-4">
               Academic Foundation &{' '}
-              <span className="underline-coral text-[#FF5C39]">
+              <span className="underline-coral text-white">
                 Coursework
               </span>
             </h2>
-            <p className="text-lg text-[#5A5A66] max-w-xl mb-12">
-              Formal business administration studies and pre-university credentials.
+            <p className="text-lg text-[#CAD0E6] max-w-2xl mb-12 leading-relaxed">
+              Formal business administration studies and pre-university credentials in Bangalore.
             </p>
 
             {/* Vertical Timeline with Cards */}
@@ -403,20 +501,20 @@ export default function App() {
               {EDUCATION_CONTENT.map((edu) => (
                 <div key={edu.id} className="relative">
                   <span className="timeline-bullet-violet" />
-                  <div className="bento-card-light">
-                    <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
-                      <span className="text-xs font-bold uppercase tracking-wider text-[#6C4CF1] bg-[#6C4CF1]/10 px-3 py-1 rounded-[var(--radius)]">
+                  <div className="bento-card-light p-6 sm:p-8">
+                    <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+                      <span className="text-xs font-bold uppercase tracking-wider text-[#00F0FF] bg-[#00F0FF]/10 border border-[#00F0FF]/30 px-3 py-1 rounded-[var(--radius)]">
                         {edu.years}
                       </span>
                     </div>
-                    <h3 className="font-display text-xl sm:text-2xl font-bold text-[#1B1B1F] mb-1">
+                    <h3 className="font-display text-xl sm:text-2xl font-bold text-white mb-1.5">
                       {edu.degree}
                     </h3>
-                    <p className="text-sm font-semibold text-[#5A5A66] mb-3">
+                    <p className="text-sm font-semibold text-[#9BA1BA] mb-4">
                       {edu.institution}
                     </p>
-                    <p className="text-sm text-[#5A5A66] leading-relaxed border-t border-[#EADFD3] pt-3">
-                      <strong className="text-[#1B1B1F]">Relevant details:</strong> {edu.relevantDetails}
+                    <p className="text-sm text-[#CAD0E6] leading-relaxed border-t border-white/10 pt-4">
+                      <strong className="text-white">Focus:</strong> {edu.relevantDetails}
                     </p>
                   </div>
                 </div>
@@ -427,10 +525,12 @@ export default function App() {
         </section>
 
         {/* ==========================================================================
-             4. EXPERIENCE & INTERNSHIPS (White Background #FFFFFF, >=96px padding)
+             4. EXPERIENCE & INTERNSHIPS (3D Dark Surface #0E1220, Spacious Timeline)
              ========================================================================== */}
-        <section id="experience" className="section-white section-padding border-b border-[#EADFD3]">
-          <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+        <section id="experience" className="section-white section-padding border-b border-white/10 relative overflow-hidden">
+          <div className="absolute inset-0 pointer-events-none bg-grid-cyber opacity-35" />
+
+          <div className="relative max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 z-10">
             
             {/* Section Label */}
             <div className="section-badge-coral">
@@ -438,43 +538,43 @@ export default function App() {
             </div>
 
             {/* Heading with Thick Lime Underline */}
-            <h2 className="heading-fluid text-[#1B1B1F] mb-4">
+            <h2 className="heading-fluid text-white mb-4">
               Hands-On Internship &{' '}
-              <span className="underline-lime text-[#1B1B1F]">
+              <span className="underline-lime text-white">
                 Studio Roles
               </span>
             </h2>
-            <p className="text-lg text-[#5A5A66] max-w-xl mb-12">
+            <p className="text-lg text-[#CAD0E6] max-w-2xl mb-12 leading-relaxed">
               Direct social media page management, campaign asset design, and video workflows.
             </p>
 
             {/* Vertical Timeline for Experience */}
-            <div className="timeline-stem flex flex-col gap-8 max-w-3xl mb-12">
+            <div className="timeline-stem flex flex-col gap-8 max-w-3xl mb-14">
               {EXPERIENCE_CONTENT.map((exp) => (
                 <div key={exp.id} className="relative">
                   <span className="timeline-bullet-coral" />
-                  <div className="bento-card-light">
-                    <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
-                      <span className="text-xs font-bold uppercase tracking-wider text-[#FF5C39] bg-[#FF5C39]/10 px-3 py-1 rounded-[var(--radius)]">
+                  <div className="bento-card-light p-6 sm:p-8">
+                    <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
+                      <span className="text-xs font-bold uppercase tracking-wider text-[#FF5C39] bg-[#FF5C39]/15 border border-[#FF5C39]/30 px-3 py-1 rounded-[var(--radius)]">
                         {exp.period}
                       </span>
-                      <span className="text-xs font-semibold text-[#5A5A66]">
+                      <span className="text-xs font-semibold text-[#9BA1BA]">
                         {exp.location}
                       </span>
                     </div>
 
-                    <h3 className="font-display text-xl sm:text-2xl font-bold text-[#1B1B1F] mb-1">
+                    <h3 className="font-display text-xl sm:text-2xl font-bold text-white mb-1.5">
                       {exp.role}
                     </h3>
 
-                    <p className="text-base font-bold text-[#FF5C39] mb-4">
+                    <p className="text-base font-bold text-[#FF5C39] mb-5">
                       {exp.company}
                     </p>
 
-                    <ul className="flex flex-col gap-2.5 text-sm text-[#5A5A66]">
+                    <ul className="flex flex-col gap-3 text-sm text-[#CAD0E6] leading-relaxed">
                       {exp.bullets.map((bullet, idx) => (
-                        <li key={idx} className="flex items-start gap-2.5">
-                          <CheckCircle2 size={18} className="text-[#FF5C39] shrink-0 mt-0.5" />
+                        <li key={idx} className="flex items-start gap-3">
+                          <CheckCircle2 size={18} className="text-[#00F0FF] shrink-0 mt-0.5" />
                           <span>{bullet}</span>
                         </li>
                       ))}
@@ -486,17 +586,17 @@ export default function App() {
 
             {/* Certifications and Courses as Small Badge Tiles */}
             <div>
-              <h3 className="font-display text-xl font-bold text-[#1B1B1F] mb-4 flex items-center gap-2">
-                <Award size={20} className="text-[#6C4CF1]" />
-                Certifications & Course Highlights
+              <h3 className="font-display text-xl font-bold text-white mb-5 flex items-center gap-2.5">
+                <Award size={22} className="text-[#00F0FF]" />
+                <span>Certifications & Course Highlights</span>
               </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
                 {CERTIFICATIONS_CONTENT.map((cert) => (
-                  <div key={cert.id} className="bento-card-light !p-5 flex flex-col justify-between">
-                    <span className="text-xs font-bold uppercase tracking-wider text-[#6C4CF1] mb-1">
+                  <div key={cert.id} className="bento-card-light !p-6 flex flex-col justify-between">
+                    <span className="text-xs font-bold uppercase tracking-wider text-[#00F0FF] mb-2">
                       {cert.issuer}
                     </span>
-                    <h4 className="font-display text-base font-bold text-[#1B1B1F]">
+                    <h4 className="font-display text-base font-bold text-white leading-snug">
                       {cert.title}
                     </h4>
                   </div>
@@ -658,11 +758,12 @@ export default function App() {
 
 
         {/* ==========================================================================
-             6. SKILLS AND TOOLS (White Background #FFFFFF, >=96px vertical padding)
-             Renumbered from 06 to 05
+             5. SKILLS AND TOOLS (3D Dark Surface #0E1220, >=96px vertical padding)
              ========================================================================== */}
-        <section id="skills" className="section-white section-padding border-b border-[#EADFD3]">
-          <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+        <section id="skills" className="section-white section-padding border-b border-white/10 relative overflow-hidden">
+          <div className="absolute inset-0 pointer-events-none bg-grid-cyber opacity-35" />
+
+          <div className="relative max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 z-10">
             
             {/* Section Label: 05 - SKILLS & TOOLS */}
             <div className="section-badge-violet">
@@ -670,38 +771,38 @@ export default function App() {
             </div>
 
             {/* Heading with Thick Coral Underline */}
-            <h2 className="heading-fluid text-[#1B1B1F] mb-4">
+            <h2 className="heading-fluid text-white mb-4">
               Creative Strategy &{' '}
-              <span className="underline-coral text-[#FF5C39]">
+              <span className="underline-coral text-white">
                 Production Stack
               </span>
             </h2>
-            <p className="text-lg text-[#5A5A66] max-w-xl mb-12">
-              Grouped bento capabilities covering content, growth strategy, and daily tools.
+            <p className="text-lg text-[#CAD0E6] max-w-2xl mb-12 leading-relaxed">
+              Grouped bento capabilities covering short-form video pacing, growth strategy, and daily editing applications.
             </p>
 
             {/* Bento Tiles Grouped as Content, Strategy, Tools */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
               {SKILLS_CONTENT.map((group, idx) => (
-                <div key={group.id} className="bento-card-light flex flex-col justify-between">
+                <div key={group.id} className="bento-card-light flex flex-col justify-between p-7 sm:p-8">
                   <div>
-                    <div className={idx === 0 ? "icon-chip-coral mb-5" : idx === 1 ? "icon-chip-violet mb-5" : "icon-chip-lime mb-5"}>
+                    <div className={idx === 0 ? "icon-chip-coral mb-6" : idx === 1 ? "icon-chip-violet mb-6" : "icon-chip-lime mb-6"}>
                       {renderIcon(group.iconName)}
                     </div>
 
-                    <h3 className="font-display text-2xl font-bold text-[#1B1B1F] mb-2">
+                    <h3 className="font-display text-2xl font-bold text-white mb-3">
                       {group.title}
                     </h3>
 
-                    <p className="text-sm text-[#5A5A66] leading-relaxed mb-6">
+                    <p className="text-sm text-[#CAD0E6] leading-relaxed mb-6">
                       {group.description}
                     </p>
                   </div>
 
-                  <div className="flex flex-col gap-2.5 pt-4 border-t border-[#EADFD3]">
+                  <div className="flex flex-col gap-3 pt-5 border-t border-white/10">
                     {group.items.map((item) => (
-                      <div key={item} className="flex items-center gap-2.5 text-sm font-semibold text-[#1B1B1F]">
-                        <CheckCircle2 size={16} className={idx === 0 ? "text-[#FF5C39]" : idx === 1 ? "text-[#6C4CF1]" : "text-[#1B1B1F]"} />
+                      <div key={item} className="flex items-center gap-3 text-sm font-semibold text-white">
+                        <CheckCircle2 size={16} className={idx === 0 ? "text-[#FF5C39]" : idx === 1 ? "text-[#00F0FF]" : "text-[#D9F76B]"} />
                         <span>{item}</span>
                       </div>
                     ))}
@@ -710,45 +811,332 @@ export default function App() {
               ))}
             </div>
 
+            {/* ======================================================================
+                 3D STEPPED PEDESTALS & CREATIVE TOOLS SUITE (Matching Screenshot 3)
+                 CapCut, Canva, Pinterest, Photoshop, Meta Suite, and AI
+                 ====================================================================== */}
+            <div className="mb-16 rounded-[var(--radius)] p-7 sm:p-9 lg:p-12 bg-[#0C0F1B] text-white border-2 border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.7),0_0_35px_rgba(0,240,255,0.15)] overflow-hidden relative">
+              {/* Top ambient lighting halo */}
+              <div className="absolute top-0 right-1/4 w-96 h-96 bg-[#00F0FF]/15 rounded-full blur-3xl pointer-events-none" />
+
+              {/* Sub-Header */}
+              <div className="flex flex-wrap items-center justify-between gap-4 pb-6 mb-8 border-b border-white/10 relative z-10">
+                <div className="flex flex-wrap items-center gap-3">
+                  <span className="font-mono text-xs font-black uppercase tracking-widest text-[#08090E] bg-[#00F0FF] px-3.5 py-1.5 rounded-[var(--radius)] shadow-[0_0_15px_rgba(0,240,255,0.4)]">
+                    {CREATIVE_TOOLS_CONTENT.sectionLabel}
+                  </span>
+                  <span className="text-xs font-extrabold uppercase tracking-wider text-[#FF5C39] bg-[#FF5C39]/15 px-3 py-1 rounded-[var(--radius)] border border-[#FF5C39]/30">
+                    CapCut · Canva · Pinterest · Photoshop · Meta
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2 text-xs font-semibold text-[#9BA1BA]">
+                  <Layers size={15} className="text-[#00F0FF]" />
+                  <span>Stepped Pedestal Hierarchy</span>
+                </div>
+              </div>
+
+              {/* Grid: Left = 3D Stepped Pedestals Artwork, Right = Tiered Tool Pedestals */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch relative z-10">
+                
+                {/* 3D Stepped Pedestals Image Stage (6 Cols) */}
+                <div className="lg:col-span-6 flex flex-col justify-between">
+                  <div>
+                    <h3 className="font-display text-2xl sm:text-3xl font-extrabold text-white leading-tight mb-4">
+                      {CREATIVE_TOOLS_CONTENT.titleLead}
+                      <span className="text-[#00F0FF]">
+                        {CREATIVE_TOOLS_CONTENT.titleKeyWord}
+                      </span>
+                    </h3>
+
+                    <p className="text-sm sm:text-base text-[#CAD0E6] leading-relaxed mb-6">
+                      {CREATIVE_TOOLS_CONTENT.subline}
+                    </p>
+                  </div>
+
+                  {/* 3D Visual Box */}
+                  <div
+                    className="relative w-full h-[280px] sm:h-[340px] md:h-[380px] rounded-[var(--radius)] overflow-hidden border border-white/20 group cursor-pointer shadow-2xl bg-[#08090E] mt-2"
+                    onClick={() => setActiveModalItem({
+                      id: 'stepped-tools-pedestals',
+                      title: '3D Stepped Pedestals · Creative & Editing Stack',
+                      category: 'Branding',
+                      fileName: CREATIVE_TOOLS_CONTENT.image,
+                      goal: 'Establish an isometric 3D production pipeline where each editing tool occupies a glowing stepped pedestal for video, design, moodboarding, and publishing.',
+                      whatIDid: 'Engineered layered creative pipelines integrating CapCut for pacing, Canva for carousels, Pinterest for visual trend discovery, and Photoshop for precision color balance.',
+                      result: 'Cohesive multi-platform content with 3x faster turnaround and unified brand aesthetic'
+                    })}
+                    title="Click to view full 3D stepped pedestals in lightbox"
+                  >
+                    <img
+                      src={CREATIVE_TOOLS_CONTENT.image}
+                      alt="3D Stepped Pedestals for Creative Tools"
+                      className="w-full h-full object-cover vibrant-img transition-transform duration-500 group-hover:scale-105"
+                      loading="lazy"
+                    />
+
+                    {/* Gradient Overlay for Sleek Look */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#08090E]/90 via-transparent to-transparent pointer-events-none" />
+
+                    {/* Badge at Bottom */}
+                    <div className="absolute bottom-4 inset-x-4 flex items-center justify-between">
+                      <span className="px-3 py-1.5 rounded-[var(--radius)] bg-[#0C0F1B]/90 text-white text-xs font-bold border border-white/20 backdrop-blur-md flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-[#00F0FF] animate-pulse" />
+                        <span>Interactive Pedestal Stack</span>
+                      </span>
+
+                      <span className="px-3 py-1.5 rounded-[var(--radius)] bg-white/15 group-hover:bg-[#00F0FF] group-hover:text-[#08090E] text-white text-xs font-bold border border-white/20 transition-all flex items-center gap-1">
+                        <Maximize2 size={13} />
+                        <span>Enlarge 3D View</span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right: Stepped Tool Cards (6 Cols) */}
+                <div className="lg:col-span-6 flex flex-col gap-3.5 justify-center">
+                  {CREATIVE_TOOLS_CONTENT.tools.map((tool) => {
+                    const isActive = activePedestalTool === tool.id;
+                    return (
+                      <div
+                        key={tool.id}
+                        onClick={() => setActivePedestalTool(tool.id)}
+                        className={`p-4 sm:p-5 rounded-[var(--radius)] border transition-all cursor-pointer ${
+                          isActive
+                            ? 'bg-[#141829] border-[#00F0FF] shadow-[0_0_20px_rgba(0,240,255,0.2)]'
+                            : 'bg-[#0F1222]/80 border-white/10 hover:border-white/25 hover:bg-[#121626]'
+                        }`}
+                      >
+                        {/* Tool Card Header */}
+                        <div className="flex items-center justify-between gap-3 mb-2.5">
+                          <div className="flex items-center gap-3">
+                            <div
+                              className="w-9 h-9 rounded-[var(--radius)] flex items-center justify-center shrink-0 border"
+                              style={{
+                                backgroundColor: `${tool.accentColor}18`,
+                                borderColor: `${tool.accentColor}50`,
+                                color: tool.accentColor
+                              }}
+                            >
+                              {renderToolBrandIcon(tool.id, "w-4 h-4")}
+                            </div>
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <h4 className="font-display text-base font-extrabold text-white">
+                                  {tool.name}
+                                </h4>
+                                <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-white/10 text-[#CAD0E6]">
+                                  Tier {tool.pedestalLevel}
+                                </span>
+                              </div>
+                              <p className="text-xs text-[#9BA1BA]">
+                                {tool.category}
+                              </p>
+                            </div>
+                          </div>
+
+                          <span
+                            className="text-[11px] font-bold px-2.5 py-1 rounded-[var(--radius)] shrink-0 border"
+                            style={{
+                              color: tool.accentColor,
+                              backgroundColor: `${tool.accentColor}12`,
+                              borderColor: `${tool.accentColor}30`
+                            }}
+                          >
+                            {tool.badge}
+                          </span>
+                        </div>
+
+                        {/* Description */}
+                        <p className="text-xs text-[#CAD0E6] leading-relaxed mb-3">
+                          {tool.description}
+                        </p>
+
+                        {/* Workflows Chips */}
+                        <div className="flex flex-wrap gap-1.5 pt-2.5 border-t border-white/10">
+                          {tool.keyWorkflows.map((flow, idx) => (
+                            <span
+                              key={idx}
+                              className="text-[11px] font-medium text-[#CAD0E6] bg-white/5 border border-white/10 px-2.5 py-1 rounded"
+                            >
+                              • {flow}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+              </div>
+            </div>
+
+            {/* AI Creative Suite & Image Editing Workstation */}
+            <div className="rounded-[var(--radius)] p-7 sm:p-9 lg:p-12 bg-[#0C0F1B] text-white border-2 border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.7),0_0_35px_rgba(108,76,241,0.15)] overflow-hidden relative">
+              {/* Ambient lighting halo */}
+              <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#6C4CF1]/15 rounded-full blur-3xl pointer-events-none" />
+
+              {/* Top Sub-Label & Header */}
+              <div className="flex flex-wrap items-center justify-between gap-4 pb-6 mb-8 border-b border-white/10 relative z-10">
+                <div className="flex items-center gap-3">
+                  <span className="font-mono text-xs font-black uppercase tracking-widest text-[#08090E] bg-[#D9F76B] px-3.5 py-1.5 rounded-[var(--radius)] shadow-[0_0_15px_rgba(217,247,107,0.4)]">
+                    {AI_WORKFLOW_CONTENT.sectionLabel}
+                  </span>
+                  <span className="text-xs font-extrabold uppercase tracking-wider text-[#FF5C39] bg-[#FF5C39]/15 px-3 py-1 rounded-[var(--radius)] border border-[#FF5C39]/30">
+                    Picture Editing & Multi-Model AI
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-2 text-xs font-semibold text-[#9BA1BA]">
+                  <Sparkles size={14} className="text-[#D9F76B]" />
+                  <span>Multimodal Creator Stack</span>
+                </div>
+              </div>
+
+              {/* Grid: Left = 3D Editing Workstation Illustration, Right = AI Symbols & Capabilities */}
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch relative z-10">
+                
+                {/* 3D AI Workstation Image Stage (7 Cols) */}
+                <div className="lg:col-span-7 flex flex-col justify-center">
+                  <div
+                    className="relative w-full h-[320px] sm:h-[400px] md:h-[440px] rounded-[var(--radius)] overflow-hidden border border-white/15 group cursor-pointer shadow-2xl bg-[#090A0D]"
+                    onClick={() => setActiveModalItem({
+                      id: 'ai-workstation',
+                      title: 'AI Creative Workstation & Image Retouching Suite',
+                      category: 'Photography',
+                      fileName: AI_WORKFLOW_CONTENT.image,
+                      goal: 'Harnessing generative AI tools for photo background expansion, complex texture retouching, and viral hook drafting.',
+                      whatIDid: 'Engineered multi-turn prompts across Claude and ChatGPT for campaign scripts; conducted generative fill and composition editing via Photoshop AI and Midjourney.',
+                      result: 'Accelerated creative ideation by 3x while maintaining consistent aesthetic polish'
+                    })}
+                    title="Click to view full illustration in lightbox"
+                  >
+                    <img
+                      src={AI_WORKFLOW_CONTENT.image}
+                      alt="AI Creative Editing Workstation"
+                      className="w-full h-full object-cover vibrant-img transition-transform duration-500 group-hover:scale-105"
+                      loading="lazy"
+                    />
+
+                    {/* Gradient Overlay for Sleek Look */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#090A0D]/90 via-transparent to-transparent pointer-events-none" />
+
+                    {/* Badge at Bottom */}
+                    <div className="absolute bottom-4 inset-x-4 flex items-center justify-between">
+                      <span className="px-3 py-1.5 rounded-[var(--radius)] bg-[#08090E]/90 text-white text-xs font-bold border border-white/20 backdrop-blur-md flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse" />
+                        <span>Chai & Pixels · Creative Studio</span>
+                      </span>
+
+                      <span className="px-3 py-1.5 rounded-[var(--radius)] bg-white/15 group-hover:bg-[#FF5C39] text-white text-xs font-bold border border-white/20 transition-all flex items-center gap-1">
+                        <Maximize2 size={13} />
+                        <span>Enlarge</span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right: AI Tools Badges & Practical Workflows (5 Cols) */}
+                <div className="lg:col-span-5 flex flex-col justify-between">
+                  <div>
+                    <h3 className="font-display text-2xl sm:text-3xl font-extrabold text-white leading-tight mb-4">
+                      {AI_WORKFLOW_CONTENT.titleLead}
+                      <span className="text-[#D9F76B]">
+                        {AI_WORKFLOW_CONTENT.titleKeyWord}
+                      </span>
+                    </h3>
+
+                    <p className="text-sm sm:text-base text-[#CAD0E6] leading-relaxed mb-6">
+                      {AI_WORKFLOW_CONTENT.subline}
+                    </p>
+
+                    {/* AI Tool Badges with Official Symbols */}
+                    <div className="mb-6">
+                      <span className="text-[11px] font-black uppercase tracking-wider text-white/60 block mb-2.5">
+                        Active AI Stack & Daily Models
+                      </span>
+                      <div className="flex flex-wrap gap-2">
+                        {AI_WORKFLOW_CONTENT.tools.map((tool) => (
+                          <div
+                            key={tool.name}
+                            className={`flex items-center gap-2 px-3 py-1.5 rounded-[var(--radius)] text-xs font-bold border ${tool.badgeClass} transition-transform hover:scale-105`}
+                            title={`${tool.company} — ${tool.focus}`}
+                          >
+                            {renderAiIcon(tool.name, "w-3.5 h-3.5 shrink-0")}
+                            <span>{tool.name}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* 3 Core Applied Workflows */}
+                    <div className="flex flex-col gap-3">
+                      {AI_WORKFLOW_CONTENT.capabilities.map((cap, i) => (
+                        <div key={i} className="p-4 rounded-[var(--radius)] bg-white/5 border border-white/10">
+                          <h4 className="text-xs font-extrabold text-white mb-1.5 flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#FF5C39]" />
+                            <span>{cap.title}</span>
+                          </h4>
+                          <p className="text-xs text-[#CAD0E6] leading-relaxed">
+                            {cap.description}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Terminal-style Prompt Sample Box */}
+                  <div className="mt-6 p-3.5 rounded-[var(--radius)] bg-[#08090E] border border-white/10 font-mono text-[11px] text-[#D9F76B] flex items-center gap-2">
+                    <span className="text-white/40">PROMPT:</span>
+                    <span className="truncate text-white/90">"Commercial studio lighting, sharp macro textures, high dynamic range..."</span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
           </div>
         </section>
 
         {/* ==========================================================================
-             7. CONTACT (Cream Background #FFF8F0, Large Coral CTA Tile)
-             Renumbered from 07 to 06
+             6. CONTACT (3D Dark Theme #0B0E18, Glowing Neon Accents)
              ========================================================================== */}
-        <section id="contact" className="section-cream section-padding">
-          <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
+        <section id="contact" className="section-cream section-padding relative overflow-hidden">
+          <div className="absolute inset-0 pointer-events-none bg-grid-cyber opacity-35" />
+
+          <div className="relative max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8 z-10">
             
             {/* Section Label: 06 - CONTACT */}
             <div className="section-badge-coral">
               <span>{CONTACT_CONTENT.sectionLabel}</span>
             </div>
 
-            {/* Large Coral Call-to-Action Tile with 6px corners and sharp borders */}
-            <div className="rounded-[var(--radius)] p-8 sm:p-12 md:p-16 bg-[#FF5C39] text-white border-2 border-[#1B1B1F] shadow-none">
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            {/* Large 3D Cyber Call-to-Action Box with glowing cyan/coral rim */}
+            <div className="rounded-[var(--radius)] p-8 sm:p-12 md:p-16 bg-[#0E1222] text-white border-2 border-white/20 shadow-[0_20px_60px_rgba(0,0,0,0.8),0_0_30px_rgba(255,92,57,0.2)] relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-[#FF5C39]/20 to-[#00F0FF]/20 rounded-full blur-3xl pointer-events-none" />
+
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center relative z-10">
                 
                 {/* Left: Headline & Statement (7 Cols) */}
                 <div className="lg:col-span-7">
-                  <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-[var(--radius)] bg-white/20 text-white text-xs font-bold uppercase tracking-wider mb-4 border border-white/30">
+                  <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-[var(--radius)] bg-white/10 text-[#00F0FF] text-xs font-bold uppercase tracking-wider mb-5 border border-[#00F0FF]/30 shadow-[0_0_12px_rgba(0,240,255,0.25)]">
                     <Sparkles size={14} />
                     Ready for new opportunities
                   </span>
 
-                  <h2 className="heading-fluid text-white mb-4">
+                  <h2 className="heading-fluid text-white mb-5">
                     {CONTACT_CONTENT.headingLead}
-                    <span className="underline-lime text-white">
+                    <span className="underline-coral text-white">
                       {CONTACT_CONTENT.headingKeyWord}
                     </span>
                   </h2>
 
-                  <p className="text-base sm:text-lg text-white/90 leading-relaxed max-w-xl mb-6">
+                  <p className="text-base sm:text-lg text-[#CAD0E6] leading-relaxed max-w-xl mb-7">
                     {CONTACT_CONTENT.subline}
                   </p>
 
-                  <div className="flex items-center gap-2 text-sm text-white/80">
-                    <MapPin size={18} />
+                  <div className="flex items-center gap-2.5 text-sm text-[#9BA1BA]">
+                    <MapPin size={18} className="text-[#FF5C39]" />
                     <span>{CONTACT_CONTENT.location}</span>
                   </div>
                 </div>
@@ -757,7 +1145,7 @@ export default function App() {
                 <div className="lg:col-span-5 flex flex-col gap-3.5">
                   <a
                     href={`mailto:${CONTACT_CONTENT.email}`}
-                    className="p-4 rounded-[var(--radius)] bg-white text-[#1B1B1F] font-bold text-sm sm:text-base flex items-center justify-center gap-2.5 border border-[#1B1B1F] btn-contact-action"
+                    className="p-4 rounded-[var(--radius)] bg-white text-[#08090E] hover:bg-[#00F0FF] font-bold text-sm sm:text-base flex items-center justify-center gap-2.5 border border-white transition-all shadow-[0_4px_20px_rgba(0,0,0,0.4)] btn-contact-action"
                   >
                     <Mail size={18} className="text-[#FF5C39]" />
                     Email: {CONTACT_CONTENT.email}
@@ -768,7 +1156,7 @@ export default function App() {
                       href={CONTACT_CONTENT.whatsappUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-3.5 rounded-[var(--radius)] bg-white/15 text-white font-bold text-sm flex items-center justify-center gap-2 border border-white/30 btn-contact-action"
+                      className="p-3.5 rounded-[var(--radius)] bg-white/10 hover:bg-[#25D366] hover:border-[#25D366] text-white font-bold text-sm flex items-center justify-center gap-2 border border-white/20 transition-all btn-contact-action"
                     >
                       <MessageCircle size={18} />
                       WhatsApp
@@ -776,7 +1164,7 @@ export default function App() {
 
                     <a
                       href={`tel:${CONTACT_CONTENT.phone.replace(/\s+/g, '')}`}
-                      className="p-3.5 rounded-[var(--radius)] bg-white/15 text-white font-bold text-sm flex items-center justify-center gap-2 border border-white/30 btn-contact-action"
+                      className="p-3.5 rounded-[var(--radius)] bg-white/10 hover:bg-[#00F0FF] hover:text-[#08090E] hover:border-[#00F0FF] text-white font-bold text-sm flex items-center justify-center gap-2 border border-white/20 transition-all btn-contact-action"
                     >
                       <Phone size={18} />
                       Direct Call
@@ -788,7 +1176,7 @@ export default function App() {
                       href={CONTACT_CONTENT.instagramUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-3.5 rounded-[var(--radius)] bg-white/15 text-white font-bold text-sm flex items-center justify-center gap-2 border border-white/30 btn-contact-action"
+                      className="p-3.5 rounded-[var(--radius)] bg-white/10 hover:bg-[#E1306C] hover:border-[#E1306C] text-white font-bold text-sm flex items-center justify-center gap-2 border border-white/20 transition-all btn-contact-action"
                     >
                       <Instagram size={18} />
                       Instagram
@@ -798,7 +1186,7 @@ export default function App() {
                       href={CONTACT_CONTENT.linkedinUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-3.5 rounded-[var(--radius)] bg-white/15 text-white font-bold text-sm flex items-center justify-center gap-2 border border-white/30 btn-contact-action"
+                      className="p-3.5 rounded-[var(--radius)] bg-white/10 hover:bg-[#0077B5] hover:border-[#0077B5] text-white font-bold text-sm flex items-center justify-center gap-2 border border-white/20 transition-all btn-contact-action"
                     >
                       <Linkedin size={18} />
                       LinkedIn
@@ -810,7 +1198,7 @@ export default function App() {
                     target="_blank"
                     rel="noopener noreferrer"
                     download={CONTACT_CONTENT.resumeFileName}
-                    className="p-4 rounded-[var(--radius)] bg-[#1B1B1F] text-white font-bold text-sm flex items-center justify-center gap-2 border border-white/20 btn-contact-action"
+                    className="p-4 rounded-[var(--radius)] bg-gradient-to-r from-[#FF5C39] to-[#E64320] text-white font-bold text-sm flex items-center justify-center gap-2 border border-white/20 transition-all shadow-[0_4px_20px_rgba(255,92,57,0.35)] btn-contact-action"
                   >
                     <Download size={18} className="text-[#D9F76B]" />
                     Download Resume (PDF)
@@ -825,26 +1213,26 @@ export default function App() {
       </main>
 
       {/* ==========================================================================
-           CASE STUDY MODAL (Lightbox with 6px corners & flat shadow)
+           CASE STUDY & 3D LIGHTBOX MODAL (Sleek 3D Dark Theme)
            ========================================================================== */}
       {activeModalItem && (
         <div
-          className="fixed inset-0 z-50 bg-[#1B1B1F]/90 backdrop-blur-md flex items-center justify-center p-4 sm:p-6"
+          className="fixed inset-0 z-50 bg-[#08090E]/95 backdrop-blur-xl flex items-center justify-center p-4 sm:p-6"
           role="dialog"
           aria-modal="true"
           onClick={() => setActiveModalItem(null)}
         >
           <div
-            className="relative w-full max-w-4xl max-h-[92vh] flex flex-col bg-white rounded-[var(--radius)] border-2 border-[#1B1B1F] shadow-[6px_6px_0_#1B1B1F] overflow-hidden"
+            className="relative w-full max-w-4xl max-h-[92vh] flex flex-col bg-[#0E111E] rounded-[var(--radius)] border-2 border-white/20 shadow-[0_25px_70px_rgba(0,0,0,0.9),0_0_30px_rgba(0,240,255,0.2)] overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="p-4 sm:p-5 border-b border-[#EADFD3] flex items-center justify-between gap-4 bg-[#FFF8F0]">
+            <div className="p-4 sm:p-5 border-b border-white/10 flex items-center justify-between gap-4 bg-[#141829]">
               <div>
-                <span className="text-xs font-bold uppercase tracking-wider text-[#FF5C39] block">
+                <span className="text-xs font-extrabold uppercase tracking-wider text-[#FF5C39] block">
                   {activeModalItem.category}
                 </span>
-                <h3 className="font-display text-lg sm:text-xl font-bold text-[#1B1B1F]">
+                <h3 className="font-display text-lg sm:text-xl font-bold text-white">
                   {activeModalItem.title}
                 </h3>
               </div>
@@ -852,7 +1240,7 @@ export default function App() {
               {/* Close Button with 6px radius */}
               <button
                 onClick={() => setActiveModalItem(null)}
-                className="w-10 h-10 rounded-[var(--radius)] bg-white border border-[#EADFD3] hover:border-[#1B1B1F] hover:bg-[#FF5C39] hover:text-white text-[#1B1B1F] flex items-center justify-center transition-all cursor-pointer shrink-0"
+                className="w-10 h-10 rounded-[var(--radius)] bg-white/10 border border-white/20 hover:border-[#FF5C39] hover:bg-[#FF5C39] text-white flex items-center justify-center transition-all cursor-pointer shrink-0"
                 aria-label="Close modal"
               >
                 <X size={20} />
@@ -862,7 +1250,7 @@ export default function App() {
             {/* Modal Content */}
             <div className="overflow-y-auto p-4 sm:p-6 flex flex-col gap-6">
               {/* Full Image */}
-              <div className="w-full max-h-[65vh] flex items-center justify-center rounded-[var(--radius)] bg-[#1B1B1F] overflow-hidden border border-[#EADFD3]">
+              <div className="w-full max-h-[65vh] flex items-center justify-center rounded-[var(--radius)] bg-[#08090E] overflow-hidden border border-white/10">
                 <img
                   src={getImagePath(activeModalItem.fileName)}
                   alt={activeModalItem.title}
@@ -870,35 +1258,35 @@ export default function App() {
                 />
               </div>
 
-              {/* Labeled Lines: Goal, What I did, and Result if customized */}
-              <div className={`grid grid-cols-1 ${activeModalItem.result && activeModalItem.result !== "Add result here" && activeModalItem.result !== "Add real result here" ? "md:grid-cols-3" : "md:grid-cols-2"} gap-4 p-5 rounded-[var(--radius)] bg-[#FFF8F0] border border-[#EADFD3]`}>
+              {/* Labeled Lines: Goal, What I did, and Result */}
+              <div className={`grid grid-cols-1 ${activeModalItem.result && activeModalItem.result !== "Add result here" && activeModalItem.result !== "Add real result here" ? "md:grid-cols-3" : "md:grid-cols-2"} gap-4 p-5 rounded-[var(--radius)] bg-[#141829] border border-white/10`}>
                 {/* 1. Goal */}
                 <div>
                   <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#FF5C39] block mb-1">
-                    Goal
+                    Goal / Objective
                   </span>
-                  <p className="text-sm text-[#1B1B1F] leading-relaxed">
+                  <p className="text-sm text-[#CAD0E6] leading-relaxed">
                     {activeModalItem.goal}
                   </p>
                 </div>
 
                 {/* 2. What I did */}
                 <div>
-                  <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#6C4CF1] block mb-1">
-                    What I did
+                  <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#00F0FF] block mb-1">
+                    Execution
                   </span>
-                  <p className="text-sm text-[#1B1B1F] leading-relaxed">
+                  <p className="text-sm text-[#CAD0E6] leading-relaxed">
                     {activeModalItem.whatIDid}
                   </p>
                 </div>
 
-                {/* 3. Result - only rendered when customized */}
+                {/* 3. Result */}
                 {activeModalItem.result && activeModalItem.result !== "Add result here" && activeModalItem.result !== "Add real result here" && (
                   <div>
-                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#1B1B1F] block mb-1">
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#D9F76B] block mb-1">
                       Result
                     </span>
-                    <div className="text-xs font-bold px-3 py-1.5 rounded-[var(--radius)] bg-white border border-[#EADFD3] text-[#1B1B1F] inline-block">
+                    <div className="text-xs font-bold px-3 py-1.5 rounded-[var(--radius)] bg-white text-[#08090E] inline-block">
                       {activeModalItem.result}
                     </div>
                   </div>
@@ -907,7 +1295,7 @@ export default function App() {
             </div>
 
             {/* Modal Footer Controls */}
-            <div className="p-4 sm:p-5 border-t border-[#EADFD3] flex items-center justify-between text-xs text-[#5A5A66] bg-[#FFF8F0]">
+            <div className="p-4 sm:p-5 border-t border-white/10 flex items-center justify-between text-xs text-[#9BA1BA] bg-[#141829]">
               <button
                 onClick={() => {
                   const currentIndex = filteredPortfolio.findIndex((item) => item.id === activeModalItem.id);
@@ -916,13 +1304,13 @@ export default function App() {
                     setActiveModalItem(filteredPortfolio[prevIndex]);
                   }
                 }}
-                className="flex items-center gap-1.5 px-3.5 py-2 rounded-[var(--radius)] bg-white border border-[#EADFD3] hover:border-[#1B1B1F] text-[#1B1B1F] font-bold transition-all cursor-pointer"
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-[var(--radius)] bg-white/10 border border-white/20 hover:border-[#00F0FF] text-white font-bold transition-all cursor-pointer"
               >
                 <ArrowLeft size={16} />
                 Previous
               </button>
 
-              <span className="font-semibold">
+              <span className="font-semibold text-white/70">
                 {filteredPortfolio.findIndex((item) => item.id === activeModalItem.id) + 1} of {filteredPortfolio.length}
               </span>
 
@@ -934,7 +1322,7 @@ export default function App() {
                     setActiveModalItem(filteredPortfolio[nextIndex]);
                   }
                 }}
-                className="flex items-center gap-1.5 px-3.5 py-2 rounded-[var(--radius)] bg-white border border-[#EADFD3] hover:border-[#1B1B1F] text-[#1B1B1F] font-bold transition-all cursor-pointer"
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-[var(--radius)] bg-white/10 border border-white/20 hover:border-[#00F0FF] text-white font-bold transition-all cursor-pointer"
               >
                 Next
                 <ArrowRight size={16} />
@@ -945,12 +1333,13 @@ export default function App() {
       )}
 
       {/* ==========================================================================
-           SIMPLE FOOTER
+           3D THEMED FOOTER
            ========================================================================== */}
-      <footer className="border-t border-[#EADFD3] py-8 bg-[#FFF8F0] text-center text-xs text-[#5A5A66]">
+      <footer className="border-t border-white/10 py-10 bg-[#08090E] text-center text-xs text-[#9BA1BA]">
         <div className="max-w-[1280px] mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="font-display text-sm font-bold text-[#1B1B1F]">
-            {CONTACT_CONTENT.name} · {CONTACT_CONTENT.role}
+          <div className="font-display text-sm font-bold text-white flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-[#00F0FF] shadow-[0_0_8px_#00F0FF]" />
+            <span>{CONTACT_CONTENT.name} · {CONTACT_CONTENT.role}</span>
           </div>
           <div>
             {CONTACT_CONTENT.footerCopyright}

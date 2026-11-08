@@ -252,54 +252,14 @@ body {
   box-shadow: 4px 4px 0 #FF5C39;
 }
 
-/* Work Bento Tile over Photo */
-.work-bento-tile {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  min-height: 220px;
-  border-radius: var(--radius);
-  overflow: hidden;
-  cursor: pointer;
-  background-color: #232329;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: none;
-  transition: transform 0.18s var(--ease-smooth), border-color 0.18s ease, box-shadow 0.18s ease;
+/* Global Vibrant Image Enhancement */
+.vibrant-img {
+  filter: contrast(1.05) saturate(1.1) brightness(1.02);
 }
 
-.work-bento-tile:hover {
-  transform: translate(-2px, -2px);
-  border-color: #FF5C39;
-  box-shadow: 4px 4px 0 #FF5C39;
-}
-
-.work-bento-tile img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.35s var(--ease-smooth);
-}
-
-.work-bento-tile:hover img {
-  transform: scale(1.04);
-}
-
-/* Dark Gradient Scrim Overlay for Work Titles */
-.work-tile-scrim {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    180deg,
-    rgba(27, 27, 31, 0.05) 0%,
-    rgba(27, 27, 31, 0.45) 50%,
-    rgba(27, 27, 31, 0.95) 100%
-  );
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 22px;
-  z-index: 10;
-  pointer-events: none;
+/* Global Vibrant Image Enhancement */
+.vibrant-img {
+  filter: contrast(1.05) saturate(1.1) brightness(1.02);
 }
 
 /* Category Filter Buttons in Work Section */
@@ -501,9 +461,18 @@ body {
   transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
 
-.btn-contact-action:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 4px 4px 0 #1B1B1F;
+/* Single Page Showcase View (One Page per Image) */
+.work-single-showcase {
+  background-color: #232329;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+  transition: border-color 0.18s ease;
+}
+
+.work-single-showcase:hover {
+  border-color: rgba(255, 92, 57, 0.45);
 }
 
 /* Prefers Reduced Motion */
@@ -516,8 +485,6 @@ body {
   }
   .bento-card-light:hover,
   .bento-card-dark:hover,
-  .work-bento-tile:hover,
-  .work-bento-tile:hover img,
   .btn-primary:hover,
   .btn-secondary:hover,
   .btn-contact-action:hover,

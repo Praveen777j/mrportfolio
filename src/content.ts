@@ -27,13 +27,13 @@ export const HERO_CONTENT = {
   heroFeatureImages: [
     {
       id: "social-feed",
-      src: "images/feed-posts.jpg",
+      src: "/images/feed-posts.jpg",
       tag: "Social Post",
       title: "Feed Campaigns"
     },
     {
       id: "social-stories",
-      src: "images/story-designs.jpg",
+      src: "/images/story-designs.jpg",
       tag: "Stories",
       title: "Interactive Formats"
     }
@@ -186,7 +186,7 @@ export const PORTFOLIO_ITEMS: PortfolioItem[] = [
     id: "social-feed",
     title: "Instagram Feed Campaigns",
     category: "Social Posts",
-    fileName: "images/feed-posts.jpg",
+    fileName: "/images/feed-posts.jpg",
     bentoSpan: "col-span-1 md:col-span-2 row-span-2", // Large Hero Tile
     goal: "Design a cohesive multi-post campaign grid to introduce new product arrivals.",
     whatIDid: "Structured 3-column feed layouts, coordinated color palettes, and wrote promotional copy.",
@@ -196,7 +196,7 @@ export const PORTFOLIO_ITEMS: PortfolioItem[] = [
     id: "social-stories",
     title: "Interactive Story Formats",
     category: "Stories",
-    fileName: "images/story-designs.jpg",
+    fileName: "/images/story-designs.jpg",
     bentoSpan: "col-span-1 row-span-2", // Tall Tile
     goal: "Boost daily audience interaction and drive website link clicks via stories.",
     whatIDid: "Created vertical templates with poll stickers, swipe-up hooks, and announcement banners.",
@@ -206,7 +206,7 @@ export const PORTFOLIO_ITEMS: PortfolioItem[] = [
     id: "photo-product",
     title: "Commercial Product Shoot",
     category: "Product",
-    fileName: "images/product.jpg",
+    fileName: "/images/product.jpg",
     bentoSpan: "col-span-1 row-span-1", // Standard Tile
     goal: "Showcase fine product craftsmanship and premium textures for retail listings.",
     whatIDid: "Handled studio lighting, product staging, and post-production color balance.",
@@ -216,7 +216,7 @@ export const PORTFOLIO_ITEMS: PortfolioItem[] = [
     id: "photo-lifestyle",
     title: "Lifestyle Editorial Staging",
     category: "Product",
-    fileName: "images/lifestyle.jpg",
+    fileName: "/images/lifestyle.jpg",
     bentoSpan: "col-span-1 row-span-1", // Standard Tile
     goal: "Create relatable lifestyle imagery that puts the product in everyday context.",
     whatIDid: "Directed casual styling, outdoor natural light composition, and color grading.",
@@ -226,7 +226,7 @@ export const PORTFOLIO_ITEMS: PortfolioItem[] = [
     id: "photo-event",
     title: "Live Event Documentation",
     category: "Events",
-    fileName: "images/event.jpg",
+    fileName: "/images/event.jpg",
     bentoSpan: "col-span-1 md:col-span-2 row-span-1", // Wide Tile
     goal: "Document vibrant energy, guest reactions, and key speakers at a community event.",
     whatIDid: "Captured fast-paced live moments, candid attendee emotions, and keynote highlights.",
@@ -236,7 +236,7 @@ export const PORTFOLIO_ITEMS: PortfolioItem[] = [
     id: "photo-food",
     title: "Culinary & Food Styling",
     category: "Photography",
-    fileName: "images/food.jpg",
+    fileName: "/images/food.jpg",
     bentoSpan: "col-span-1 row-span-2", // Tall Tile
     goal: "Produce appetizing culinary visuals for cafe menu and promotional social feeds.",
     whatIDid: "Styled table props, utilized soft directional window light, and accented fresh textures.",
@@ -246,7 +246,7 @@ export const PORTFOLIO_ITEMS: PortfolioItem[] = [
     id: "photo-nature",
     title: "Botanical Nature Study",
     category: "Photography",
-    fileName: "images/nature.jpg",
+    fileName: "/images/nature.jpg",
     bentoSpan: "col-span-1 row-span-1", // Standard Tile
     goal: "Capture subtle morning textures and atmospheric organic depth.",
     whatIDid: "Framed macro botanical details using natural shallow depth of field.",
@@ -256,7 +256,7 @@ export const PORTFOLIO_ITEMS: PortfolioItem[] = [
     id: "photo-sunset-1",
     title: "Sunset Atmosphere I",
     category: "Photography",
-    fileName: "images/sunset-1.jpg",
+    fileName: "/images/sunset-1.jpg",
     bentoSpan: "col-span-1 row-span-1", // Standard Tile
     goal: "Study natural twilight color transitions across the Bangalore horizon.",
     whatIDid: "Captured golden hour gradient transitions with high dynamic range exposure.",
@@ -266,7 +266,7 @@ export const PORTFOLIO_ITEMS: PortfolioItem[] = [
     id: "photo-sunset-2",
     title: "Sunset Atmosphere II",
     category: "Photography",
-    fileName: "images/sunset-2.jpg",
+    fileName: "/images/sunset-2.jpg",
     bentoSpan: "col-span-1 row-span-1", // Standard Tile
     goal: "Capture silhouette contrasts against deep evening orange skies.",
     whatIDid: "Framed horizon silhouettes and balanced highlights during dusk.",
@@ -276,7 +276,7 @@ export const PORTFOLIO_ITEMS: PortfolioItem[] = [
     id: "photo-kedarnath",
     title: "Kedarnath Expedition",
     category: "Photography",
-    fileName: "images/kedarnath.jpg",
+    fileName: "/images/kedarnath.jpg",
     bentoSpan: "col-span-1 md:col-span-2 row-span-2", // Large Feature Tile
     goal: "Document high-altitude temple grandeur and Himalayan pilgrim atmosphere.",
     whatIDid: "Hiked mountain routes with gear, capturing cold mountain light and architecture.",
@@ -286,7 +286,7 @@ export const PORTFOLIO_ITEMS: PortfolioItem[] = [
     id: "adobe-logo",
     title: "Brand Identity — Sip Glitz",
     category: "Branding",
-    fileName: "images/logo-sip-glitz.jpg",
+    fileName: "/images/logo-sip-glitz.jpg",
     bentoSpan: "col-span-1 row-span-1", // Standard Tile
     goal: "Design a recognizable modern logo mark for an artisanal beverage label.",
     whatIDid: "Developed vector marks, refined typography balance, and established color system.",
@@ -296,7 +296,7 @@ export const PORTFOLIO_ITEMS: PortfolioItem[] = [
     id: "adobe-visiting-card",
     title: "Visiting Card Stationery",
     category: "Branding",
-    fileName: "images/visiting-card.jpg",
+    fileName: "/images/visiting-card.jpg",
     bentoSpan: "col-span-1 row-span-1", // Standard Tile
     goal: "Create clean, print-ready corporate business cards with clear hierarchy.",
     whatIDid: "Engineered double-sided layout with bleed margins and legible contact structure.",
@@ -306,7 +306,7 @@ export const PORTFOLIO_ITEMS: PortfolioItem[] = [
     id: "adobe-poster",
     title: "Promotional Event Poster",
     category: "Branding",
-    fileName: "images/poster.jpg",
+    fileName: "/images/poster.jpg",
     bentoSpan: "col-span-1 row-span-2", // Tall Tile
     goal: "Craft a high-impact advertising poster for public event announcements.",
     whatIDid: "Combined bold typography scales, graphic accents, and date/venue clarity.",
@@ -316,7 +316,7 @@ export const PORTFOLIO_ITEMS: PortfolioItem[] = [
     id: "adobe-brochure-front",
     title: "Brochure Cover Design",
     category: "Branding",
-    fileName: "images/brochure-front.jpg",
+    fileName: "/images/brochure-front.jpg",
     bentoSpan: "col-span-1 row-span-1", // Standard Tile
     goal: "Design an inviting front cover that immediately communicates brand mission.",
     whatIDid: "Balanced headline copy, brand badge, and imagery for clean folding alignment.",
@@ -326,7 +326,7 @@ export const PORTFOLIO_ITEMS: PortfolioItem[] = [
     id: "adobe-brochure-back",
     title: "Brochure Information Architecture",
     category: "Branding",
-    fileName: "images/brochure-back.jpg",
+    fileName: "/images/brochure-back.jpg",
     bentoSpan: "col-span-1 row-span-1", // Standard Tile
     goal: "Structure detailed service explanations and contact details for prospective clients.",
     whatIDid: "Created scannable bullet columns, icon points, and call-to-action blocks.",
@@ -336,7 +336,7 @@ export const PORTFOLIO_ITEMS: PortfolioItem[] = [
     id: "adobe-software-fonts",
     title: "Type System & Font Stack",
     category: "Branding",
-    fileName: "images/software-fonts.jpg",
+    fileName: "/images/software-fonts.jpg",
     bentoSpan: "col-span-1 md:col-span-2 row-span-1", // Wide Tile
     goal: "Document font pairings and software tools used across creative collateral.",
     whatIDid: "Curated editorial font hierarchy and toolset documentation.",
@@ -346,10 +346,60 @@ export const PORTFOLIO_ITEMS: PortfolioItem[] = [
     id: "brand-indima-spices",
     title: "Indima Spices Price List",
     category: "Branding",
-    fileName: "images/indima-pricelist.jpg",
+    fileName: "/images/indima-pricelist.jpg",
     bentoSpan: "col-span-1 md:col-span-2 row-span-1", // Wide Tile
     goal: "Produce an organized, legible price menu for home-crafted spice products.",
     whatIDid: "Formatted tables, packaging units, and clear pricing categories.",
+    result: "Add result here"
+  },
+  {
+    id: "photo-wildflowers",
+    title: "Wildflower Macro Botanical Study",
+    category: "Photography",
+    fileName: "/images/wildflowers-botanical.jpg",
+    bentoSpan: "col-span-1 md:col-span-2 row-span-2", // Large Feature Tile
+    goal: "Capture vibrant floral textures, petal curvature, and fine botanical dew in natural diffused daylight.",
+    whatIDid: "Composed close-up macro framing, balanced foreground petal depth, and captured crisp botanical micro-textures.",
+    result: "Add result here"
+  },
+  {
+    id: "photo-bangalore-night",
+    title: "Bangalore Nightlife & City Lights",
+    category: "Events",
+    fileName: "/images/bangalore-nightlife.jpg",
+    bentoSpan: "col-span-1 md:col-span-2 row-span-2", // Large Feature Tile
+    goal: "Document bustling Bangalore commercial avenue atmosphere under festive fairy light canopies.",
+    whatIDid: "Balanced ambient night exposure, vehicle motion trails, storefront illumination, and illuminated brand billboards.",
+    result: "Add result here"
+  },
+  {
+    id: "photo-forest-trek",
+    title: "Western Ghats Forest Expedition",
+    category: "Photography",
+    fileName: "/images/forest-trek.jpg",
+    bentoSpan: "col-span-1 row-span-2", // Tall Tile
+    goal: "Document adventurous monsoon trail hiking through dense forest terrain and rocky climbs.",
+    whatIDid: "Captured candid hiker movement, rocky pathway depth, and atmospheric green canopy depth in rain conditions.",
+    result: "Add result here"
+  },
+  {
+    id: "photo-mysore-lights",
+    title: "Festive Street Illuminations & Chandeliers",
+    category: "Events",
+    fileName: "/images/mysore-illuminations.jpg",
+    bentoSpan: "col-span-1 row-span-2", // Tall Tile
+    goal: "Capture the grandeur of overhead illuminated light strings and cultural street festival celebrations.",
+    whatIDid: "Controlled high-contrast night light glow, golden chandelier reflections, and vibrant evening traffic ambience.",
+    result: "Add result here"
+  },
+  {
+    id: "photo-sky-canopy",
+    title: "Forest Canopy & Azure Skies",
+    category: "Photography",
+    fileName: "/images/sky-canopy.jpg",
+    bentoSpan: "col-span-1 row-span-1", // Standard Tile
+    goal: "Frame an upward perspective of treetop foliage reaching against open blue skies and clouds.",
+    whatIDid: "Utilized low-angle vertical composition, balanced daylight dynamic range, and captured rich foliage greens.",
     result: "Add result here"
   }
 ];

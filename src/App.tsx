@@ -30,8 +30,17 @@ import {
   Camera,
   Wrench,
   Award,
-  CheckCircle2
+  CheckCircle2,
+  Maximize2
 } from 'lucide-react';
+
+// Helper to normalize image paths
+const getImagePath = (path: string): string => {
+  if (!path) return '';
+  if (path.startsWith('http://') || path.startsWith('https://')) return path;
+  if (path.startsWith('/')) return path;
+  return `/${path}`;
+};
 
 export default function App() {
   const [activeCategory, setActiveCategory] = useState<string>('All');
@@ -44,23 +53,24 @@ export default function App() {
     return item.category === activeCategory;
   });
 
-  // Keyboard navigation for Modal
+  // Keyboard navigation for Lightbox Modal
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (!activeModalItem) return;
-      if (e.key === 'Escape') {
-        setActiveModalItem(null);
-      } else if (e.key === 'ArrowRight') {
-        const currentIndex = filteredPortfolio.findIndex((item) => item.id === activeModalItem.id);
-        if (currentIndex !== -1) {
-          const nextIndex = (currentIndex + 1) % filteredPortfolio.length;
-          setActiveModalItem(filteredPortfolio[nextIndex]);
-        }
-      } else if (e.key === 'ArrowLeft') {
-        const currentIndex = filteredPortfolio.findIndex((item) => item.id === activeModalItem.id);
-        if (currentIndex !== -1) {
-          const prevIndex = (currentIndex - 1 + filteredPortfolio.length) % filteredPortfolio.length;
-          setActiveModalItem(filteredPortfolio[prevIndex]);
+      if (activeModalItem) {
+        if (e.key === 'Escape') {
+          setActiveModalItem(null);
+        } else if (e.key === 'ArrowRight') {
+          const currentIndex = filteredPortfolio.findIndex((item) => item.id === activeModalItem.id);
+          if (currentIndex !== -1) {
+            const nextIndex = (currentIndex + 1) % filteredPortfolio.length;
+            setActiveModalItem(filteredPortfolio[nextIndex]);
+          }
+        } else if (e.key === 'ArrowLeft') {
+          const currentIndex = filteredPortfolio.findIndex((item) => item.id === activeModalItem.id);
+          if (currentIndex !== -1) {
+            const prevIndex = (currentIndex - 1 + filteredPortfolio.length) % filteredPortfolio.length;
+            setActiveModalItem(filteredPortfolio[prevIndex]);
+          }
         }
       }
     };
@@ -227,100 +237,72 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Right Column: Small Hero Bento Cluster of 4 Tiles (5 Cols) */}
+              {/* Right Column: Hero Bento Cluster (5 Cols) */}
               <div className="lg:col-span-5 w-full">
-                <div className="grid grid-cols-2 gap-4 auto-rows-[160px] sm:auto-rows-[185px]">
-                  
-                  {/* Hero Tile 1: Best Image 1 (Feed Posts) */}
-                  <div
-                    className="bento-card-light !p-0 overflow-hidden cursor-pointer group"
-                    onClick={() => {
-                      const found = PORTFOLIO_ITEMS.find((p) => p.id === 'social-feed');
-                      if (found) setActiveModalItem(found);
-                    }}
-                    title="Click to view Instagram Feed Campaign"
+                <div className="grid grid-cols-2 gap-3.5 sm:gap-4">
+                  {/* Tile 1: Top Campaign Creative */}
+                  <a
+                    href="#work"
+                    className="group relative h-40 sm:h-48 rounded-[var(--radius)] overflow-hidden border border-[#EADFD3] hover:border-[#FF5C39] transition-all bg-[#1B1B1F] shadow-none hover:shadow-[4px_4px_0_#1B1B1F]"
                   >
-                    <div className="relative w-full h-full">
-                      <img
-                        src={HERO_CONTENT.heroFeatureImages[0].src}
-                        alt="Instagram Feed Campaign"
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        loading="eager"
-                      />
-                      <div className="absolute inset-x-0 bottom-0 p-3.5 bg-gradient-to-t from-[#1B1B1F]/90 via-[#1B1B1F]/40 to-transparent flex flex-col justify-end">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-[#D9F76B]">
-                          {HERO_CONTENT.heroFeatureImages[0].tag}
-                        </span>
-                        <span className="font-display text-sm font-bold text-white leading-tight">
-                          {HERO_CONTENT.heroFeatureImages[0].title}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
+                    <img
+                      src="/images/feed-posts.jpg"
+                      alt="Campaign Creative"
+                      className="w-full h-full object-cover vibrant-img group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <span className="absolute bottom-2.5 left-2.5 text-[10px] font-extrabold uppercase tracking-wider bg-[#1B1B1F]/90 text-white px-2.5 py-1 rounded-[var(--radius)] border border-white/20 backdrop-blur-sm">
+                      Campaigns
+                    </span>
+                  </a>
 
-                  {/* Hero Tile 2: Best Image 2 (Story Designs) */}
-                  <div
-                    className="bento-card-light !p-0 overflow-hidden cursor-pointer group"
-                    onClick={() => {
-                      const found = PORTFOLIO_ITEMS.find((p) => p.id === 'social-stories');
-                      if (found) setActiveModalItem(found);
-                    }}
-                    title="Click to view Story Concepts"
+                  {/* Tile 2: Top Photography Shot */}
+                  <a
+                    href="#work"
+                    className="group relative h-40 sm:h-48 rounded-[var(--radius)] overflow-hidden border border-[#EADFD3] hover:border-[#FF5C39] transition-all bg-[#1B1B1F] shadow-none hover:shadow-[4px_4px_0_#1B1B1F]"
                   >
-                    <div className="relative w-full h-full">
-                      <img
-                        src={HERO_CONTENT.heroFeatureImages[1].src}
-                        alt="Instagram Story Designs"
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        loading="eager"
-                      />
-                      <div className="absolute inset-x-0 bottom-0 p-3.5 bg-gradient-to-t from-[#1B1B1F]/90 via-[#1B1B1F]/40 to-transparent flex flex-col justify-end">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-[#D9F76B]">
-                          {HERO_CONTENT.heroFeatureImages[1].tag}
-                        </span>
-                        <span className="font-display text-sm font-bold text-white leading-tight">
-                          {HERO_CONTENT.heroFeatureImages[1].title}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
+                    <img
+                      src="/images/wildflowers-botanical.jpg"
+                      alt="Photography Macro"
+                      className="w-full h-full object-cover vibrant-img group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <span className="absolute bottom-2.5 left-2.5 text-[10px] font-extrabold uppercase tracking-wider bg-[#1B1B1F]/90 text-white px-2.5 py-1 rounded-[var(--radius)] border border-white/20 backdrop-blur-sm">
+                      Visuals
+                    </span>
+                  </a>
 
-                  {/* Hero Tile 3: Status Badge Tile (Lime Highlight #D9F76B) */}
-                  <div className="bento-card-light bg-[#D9F76B] border-[#1B1B1F] flex flex-col justify-between">
-                    <div className="flex items-center justify-between">
-                      <span className="w-2.5 h-2.5 rounded-full bg-[#1B1B1F]" />
-                      <Sparkles size={16} className="text-[#1B1B1F]" />
+                  {/* Tile 3: Internship Ready Card */}
+                  <div className="bento-card-light !p-4 sm:!p-5 flex flex-col justify-between border border-[#EADFD3]">
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-[#FF5C39]">
+                      <span className="w-2 h-2 rounded-full bg-[#FF5C39] animate-ping" />
+                      <span>Available</span>
                     </div>
                     <div>
-                      <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#1B1B1F]/70 block mb-0.5">
-                        Availability
-                      </span>
-                      <h3 className="font-display text-base font-bold text-[#1B1B1F] leading-tight">
-                        {HERO_CONTENT.statusBadgeText}
-                      </h3>
-                      <p className="text-xs text-[#1B1B1F]/80 font-medium mt-0.5">
-                        Bangalore / Hybrid
+                      <h4 className="font-display text-sm sm:text-base font-bold text-[#1B1B1F] leading-tight mb-0.5">
+                        Internship Ready
+                      </h4>
+                      <p className="text-[11px] text-[#5A5A66]">
+                        Bangalore · Immediate
                       </p>
                     </div>
                   </div>
 
-                  {/* Hero Tile 4: 3 Skill Chips Tile */}
-                  <div className="bento-card-light flex flex-col justify-between">
-                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#FF5C39]">
-                      Core Capabilities
+                  {/* Tile 4: Core Skills Focus */}
+                  <div className="bento-card-light !p-4 sm:!p-5 flex flex-col justify-between border border-[#EADFD3]">
+                    <span className="text-[10px] font-black uppercase tracking-wider text-[#6C4CF1]">
+                      Focus Stack
                     </span>
-                    <div className="flex flex-col gap-1.5">
-                      {HERO_CONTENT.heroSkillChips.map((chip, i) => (
-                        <span
-                          key={i}
-                          className="text-xs font-semibold px-2.5 py-1 rounded-[var(--radius)] bg-[#FFF8F0] border border-[#EADFD3] text-[#1B1B1F] truncate"
-                        >
-                          {chip}
-                        </span>
-                      ))}
+                    <div className="flex flex-wrap gap-1.5">
+                      <span className="text-[10px] font-bold bg-[#6C4CF1]/10 text-[#6C4CF1] px-2 py-0.5 rounded-[var(--radius)]">
+                        Reels
+                      </span>
+                      <span className="text-[10px] font-bold bg-[#FF5C39]/10 text-[#FF5C39] px-2 py-0.5 rounded-[var(--radius)]">
+                        Strategy
+                      </span>
+                      <span className="text-[10px] font-bold bg-[#1B1B1F]/10 text-[#1B1B1F] px-2 py-0.5 rounded-[var(--radius)]">
+                        Content
+                      </span>
                     </div>
                   </div>
-
                 </div>
               </div>
 
@@ -402,7 +384,7 @@ export default function App() {
             
             {/* Section Label */}
             <div className="section-badge-violet">
-              <span>{EDUCATION_CONTENT[0] ? "02 - EDUCATION" : "02 - EDUCATION"}</span>
+              <span>02 - EDUCATION</span>
             </div>
 
             {/* Heading with Thick Coral Underline */}
@@ -526,14 +508,14 @@ export default function App() {
         </section>
 
         {/* ==========================================================================
-             5. WORK SECTION (Dark Ink Background #1B1B1F, >=96px vertical padding)
+             5. WORK / POSTS SECTION (Dark Ink Background #1B1B1F, 1 Post Per Page)
              ========================================================================== */}
         <section id="work" className="section-ink section-padding border-b border-white/10">
           <div className="max-w-[1280px] mx-auto px-4 sm:px-6 lg:px-8">
             
             {/* Section Label */}
             <div className="section-badge-lime">
-              <span>04 - WORK</span>
+              <span>04 - WORK & CASE STUDIES</span>
             </div>
 
             {/* Heading with Thick Coral Underline */}
@@ -545,14 +527,14 @@ export default function App() {
                     Creatives
                   </span>
                 </h2>
-                <p className="text-lg text-[#B2B4C2] mt-3 max-w-xl">
-                  17 verified portfolio works. Click any card to inspect the Goal, What I did, and Results.
+                <p className="text-lg text-[#B2B4C2] mt-3 max-w-2xl">
+                  {filteredPortfolio.length} featured works. Scroll down to browse through each project in full detail, or filter by category.
                 </p>
               </div>
             </div>
 
-            {/* Category Filter Buttons (with 6px radius) */}
-            <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-8 scrollbar-none" role="tablist">
+            {/* Category Filter Bar */}
+            <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-10 scrollbar-none" role="tablist">
               {WORK_CATEGORIES.map((cat) => (
                 <button
                   key={cat}
@@ -566,55 +548,114 @@ export default function App() {
               ))}
             </div>
 
-            {/* 4-Column Dense Bento Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-[220px] md:auto-rows-[260px] [grid-auto-flow:dense]">
+            {/* Continuous Naturally Scrollable Feed of Projects (No Page Buttons) */}
+            <div className="flex flex-col gap-10 sm:gap-14">
               {filteredPortfolio.map((item) => (
-                <div
+                <article
                   key={item.id}
-                  className={`work-bento-tile group ${item.bentoSpan}`}
-                  tabIndex={0}
-                  role="button"
-                  aria-label={`View details for ${item.title}`}
-                  onClick={() => setActiveModalItem(item)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      setActiveModalItem(item);
-                    }
-                  }}
+                  id={`project-${item.id}`}
+                  className="work-single-showcase p-6 sm:p-8 lg:p-10 border-2 border-white/15 hover:border-[#FF5C39]/50 transition-all shadow-[6px_6px_0_#1B1B1F]"
                 >
-                  <img
-                    src={item.fileName}
-                    alt={item.title}
-                    loading="lazy"
-                    onError={(e) => {
-                      const target = e.currentTarget;
-                      target.style.display = 'none';
-                    }}
-                  />
-
-                  {/* Dark Gradient Overlay for Guaranteed Contrast */}
-                  <div className="work-tile-scrim">
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-[#D9F76B] mb-1">
+                  {/* Project Top Meta Bar */}
+                  <div className="flex items-center justify-between gap-4 pb-5 mb-6 border-b border-white/10 text-xs">
+                    <span className="text-xs font-extrabold uppercase tracking-wider text-[#FF5C39] bg-[#FF5C39]/15 px-3 py-1 rounded-[var(--radius)] border border-[#FF5C39]/30">
                       {item.category}
                     </span>
-                    <h3
-                      className="font-display text-lg sm:text-xl font-bold text-white leading-snug group-hover:text-[#FF5C39] transition-colors"
-                      style={{ overflowWrap: 'anywhere', textWrap: 'balance' }}
+
+                    <button
+                      onClick={() => setActiveModalItem(item)}
+                      className="flex items-center gap-1.5 text-xs font-bold text-[#D9F76B] hover:text-white transition-colors cursor-pointer"
                     >
-                      {item.title}
-                    </h3>
-                    <div className="flex items-center justify-between text-xs text-[#B2B4C2] mt-2 pt-2 border-t border-white/10 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <span>View Case Study</span>
-                      <ArrowRight size={14} className="text-[#FF5C39]" />
-                    </div>
+                      <Maximize2 size={14} />
+                      <span>Enlarge Photo</span>
+                    </button>
                   </div>
-                </div>
+
+                  {/* Main Grid: Left = Clear Large Photo, Right = Case Study Dossier */}
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-stretch">
+                    
+                    {/* Photo Stage (7 Cols): Crisp, vivid, uncropped */}
+                    <div className="lg:col-span-7 flex flex-col justify-center">
+                      <div
+                        className="relative w-full min-h-[340px] sm:min-h-[440px] md:min-h-[500px] max-h-[620px] bg-[#14151B] rounded-[var(--radius)] overflow-hidden border border-white/15 flex items-center justify-center group cursor-pointer shadow-inner"
+                        onClick={() => setActiveModalItem(item)}
+                        title="Click to inspect in fullscreen lightbox"
+                      >
+                        <img
+                          src={getImagePath(item.fileName)}
+                          alt={item.title}
+                          className="w-full h-full max-h-[580px] object-contain vibrant-img transition-transform duration-300 group-hover:scale-[1.02]"
+                          loading="lazy"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Case Study Breakdown (5 Cols) */}
+                    <div className="lg:col-span-5 flex flex-col justify-between">
+                      <div>
+                        {/* Title */}
+                        <h3 className="font-display text-2xl sm:text-3xl font-extrabold text-white leading-tight mb-6">
+                          {item.title}
+                        </h3>
+
+                        {/* Structured Objective & Execution Blocks */}
+                        <div className="flex flex-col gap-4">
+                          {/* 1. Creative Objective */}
+                          <div className="p-4 rounded-[var(--radius)] bg-white/5 border border-white/10">
+                            <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#FF5C39] block mb-1.5">
+                              Creative Objective
+                            </span>
+                            <p className="text-sm text-[#E2E4EC] leading-relaxed">
+                              {item.goal}
+                            </p>
+                          </div>
+
+                          {/* 2. What I Did */}
+                          <div className="p-4 rounded-[var(--radius)] bg-white/5 border border-white/10">
+                            <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#6C4CF1] block mb-1.5">
+                              What I Did
+                            </span>
+                            <p className="text-sm text-[#E2E4EC] leading-relaxed">
+                              {item.whatIDid}
+                            </p>
+                          </div>
+
+                          {/* 3. Result - only rendered when custom result is provided */}
+                          {item.result && item.result !== "Add result here" && item.result !== "Add real result here" && (
+                            <div className="p-4 rounded-[var(--radius)] bg-white/5 border border-white/10">
+                              <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#D9F76B] block mb-1.5">
+                                Result
+                              </span>
+                              <div className="text-xs font-bold px-3 py-1.5 rounded-[var(--radius)] bg-white text-[#1B1B1F] inline-block">
+                                {item.result}
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Bottom Clean Action */}
+                      <div className="pt-6 mt-6 border-t border-white/10 flex items-center justify-end">
+                        <button
+                          onClick={() => setActiveModalItem(item)}
+                          className="flex items-center gap-2 px-4 py-2.5 rounded-[var(--radius)] bg-white/10 hover:bg-[#FF5C39] text-white text-xs font-bold border border-white/20 transition-all cursor-pointer"
+                        >
+                          <Maximize2 size={14} />
+                          <span>View Fullscreen</span>
+                        </button>
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                </article>
               ))}
             </div>
 
           </div>
         </section>
+
 
         {/* ==========================================================================
              6. SKILLS AND TOOLS (White Background #FFFFFF, >=96px vertical padding)
@@ -821,16 +862,16 @@ export default function App() {
             {/* Modal Content */}
             <div className="overflow-y-auto p-4 sm:p-6 flex flex-col gap-6">
               {/* Full Image */}
-              <div className="w-full max-h-[55vh] flex items-center justify-center rounded-[var(--radius)] bg-[#1B1B1F] overflow-hidden border border-[#EADFD3]">
+              <div className="w-full max-h-[65vh] flex items-center justify-center rounded-[var(--radius)] bg-[#1B1B1F] overflow-hidden border border-[#EADFD3]">
                 <img
-                  src={activeModalItem.fileName}
+                  src={getImagePath(activeModalItem.fileName)}
                   alt={activeModalItem.title}
-                  className="max-h-[55vh] w-auto max-w-full object-contain"
+                  className="max-h-[65vh] w-auto max-w-full object-contain vibrant-img"
                 />
               </div>
 
-              {/* Three Labeled Lines: Goal, What I did, Result */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-5 rounded-[var(--radius)] bg-[#FFF8F0] border border-[#EADFD3]">
+              {/* Labeled Lines: Goal, What I did, and Result if customized */}
+              <div className={`grid grid-cols-1 ${activeModalItem.result && activeModalItem.result !== "Add result here" && activeModalItem.result !== "Add real result here" ? "md:grid-cols-3" : "md:grid-cols-2"} gap-4 p-5 rounded-[var(--radius)] bg-[#FFF8F0] border border-[#EADFD3]`}>
                 {/* 1. Goal */}
                 <div>
                   <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#FF5C39] block mb-1">
@@ -851,15 +892,17 @@ export default function App() {
                   </p>
                 </div>
 
-                {/* 3. Result */}
-                <div>
-                  <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#1B1B1F] block mb-1">
-                    Result
-                  </span>
-                  <div className="text-xs font-bold px-3 py-1.5 rounded-[var(--radius)] bg-white border border-[#EADFD3] text-[#1B1B1F] inline-block">
-                    {activeModalItem.result}
+                {/* 3. Result - only rendered when customized */}
+                {activeModalItem.result && activeModalItem.result !== "Add result here" && activeModalItem.result !== "Add real result here" && (
+                  <div>
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#1B1B1F] block mb-1">
+                      Result
+                    </span>
+                    <div className="text-xs font-bold px-3 py-1.5 rounded-[var(--radius)] bg-white border border-[#EADFD3] text-[#1B1B1F] inline-block">
+                      {activeModalItem.result}
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             </div>
 

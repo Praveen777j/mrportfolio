@@ -576,19 +576,129 @@ body {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
-/* Single Page Showcase View (One Page per Project) */
+/* Single Page Showcase View (One Page per Project) - 3D Floating Cyber Stage */
 .work-single-showcase {
-  background-color: #0E111E;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(160deg, #101424 0%, #0B0E1B 100%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: var(--radius);
-  overflow: hidden;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  overflow: visible;
+  box-shadow: 
+    0 25px 60px -15px rgba(0, 0, 0, 0.85),
+    0 0 35px rgba(0, 240, 255, 0.12),
+    inset 0 1px 1px rgba(255, 255, 255, 0.12);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
 }
 
 .work-single-showcase:hover {
+  transform: translateY(-6px);
   border-color: #00F0FF;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 30px rgba(0, 240, 255, 0.2);
+  box-shadow: 
+    0 35px 70px -15px rgba(0, 0, 0, 0.9),
+    0 0 45px rgba(0, 240, 255, 0.28),
+    inset 0 1px 2px rgba(255, 255, 255, 0.2);
+}
+
+/* Real 3D Continuous Levitation & Floating Physics */
+@keyframes real-3d-float {
+  0%, 100% {
+    transform: translateY(0px) rotateX(1.8deg) rotateY(-0.5deg);
+  }
+  28% {
+    transform: translateY(-9px) rotateX(2.8deg) rotateY(0.6deg);
+  }
+  55% {
+    transform: translateY(-16px) rotateX(3.6deg) rotateY(-0.4deg);
+  }
+  82% {
+    transform: translateY(-6px) rotateX(2.2deg) rotateY(0.4deg);
+  }
+}
+
+@keyframes real-floor-glow-pulse {
+  0%, 100% {
+    transform: scaleX(1) scaleY(1);
+    opacity: 0.65;
+    filter: blur(10px);
+  }
+  28% {
+    transform: scaleX(0.88) scaleY(0.78);
+    opacity: 0.45;
+    filter: blur(13px);
+  }
+  55% {
+    transform: scaleX(0.76) scaleY(0.64);
+    opacity: 0.32;
+    filter: blur(17px);
+  }
+  82% {
+    transform: scaleX(0.92) scaleY(0.86);
+    opacity: 0.55;
+    filter: blur(12px);
+  }
+}
+
+/* 3D Floating Visual Stage - Real Levitation Hover */
+.floating-3d-stage {
+  position: relative;
+  border-radius: var(--radius);
+  background: linear-gradient(145deg, #141829 0%, #080A12 100%);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 
+    0 25px 50px -10px rgba(0, 0, 0, 0.9),
+    0 0 30px rgba(0, 240, 255, 0.18),
+    inset 0 1px 1px rgba(255, 255, 255, 0.2);
+  transform-style: preserve-3d;
+  animation: real-3d-float 6.5s ease-in-out infinite;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease, border-color 0.4s ease;
+  will-change: transform;
+}
+
+.floating-3d-stage:hover {
+  animation-play-state: paused;
+  transform: translateY(-22px) rotateX(2deg) scale(1.02);
+  border-color: #00F0FF;
+  box-shadow: 
+    0 45px 80px -12px rgba(0, 0, 0, 0.98),
+    0 0 50px rgba(0, 240, 255, 0.45),
+    inset 0 1px 2px rgba(255, 255, 255, 0.35);
+}
+
+/* Ambient Floating Spotlight Glow on the Floor */
+.floating-floor-glow {
+  position: absolute;
+  bottom: -28px;
+  left: 10%;
+  right: 10%;
+  height: 36px;
+  background: radial-gradient(ellipse at center, rgba(0, 240, 255, 0.45) 0%, rgba(108, 76, 241, 0.25) 45%, transparent 75%);
+  filter: blur(12px);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  animation: real-floor-glow-pulse 6.5s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.floating-floor-glow-coral {
+  position: absolute;
+  bottom: -28px;
+  left: 10%;
+  right: 10%;
+  height: 36px;
+  background: radial-gradient(ellipse at center, rgba(255, 92, 57, 0.45) 0%, rgba(108, 76, 241, 0.25) 45%, transparent 75%);
+  filter: blur(12px);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  animation: real-floor-glow-pulse 6.5s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+/* Clear Sentence Readability with Generous Thought Spacing */
+.sentence-gap {
+  display: block;
+  margin-top: 0.75rem;
 }
 
 /* Prefers Reduced Motion */

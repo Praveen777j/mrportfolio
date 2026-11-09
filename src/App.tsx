@@ -10,8 +10,7 @@ import {
   SKILLS_CONTENT,
   CREATIVE_TOOLS_CONTENT,
   AI_WORKFLOW_CONTENT,
-  CONTACT_CONTENT,
-  PortfolioItem
+  CONTACT_CONTENT
 } from './content';
 
 import {
@@ -20,7 +19,6 @@ import {
   MapPin,
   Download,
   ArrowRight,
-  ArrowLeft,
   X,
   Menu,
   Sparkles,
@@ -33,7 +31,6 @@ import {
   Wrench,
   Award,
   CheckCircle2,
-  Maximize2,
   Layers,
   Palette
 } from 'lucide-react';
@@ -46,9 +43,31 @@ const getImagePath = (path: string): string => {
   return `/${path}`;
 };
 
+// Helper to render text with clear, breathable gaps after each sentence
+const renderClearSentences = (text: string, pClassName = "text-[#CAD0E6]") => {
+  if (!text) return null;
+  const sentences = text
+    .split(/(?<=[.?!])\s+/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  if (sentences.length <= 1) {
+    return <p className={`leading-relaxed ${pClassName}`}>{text}</p>;
+  }
+
+  return (
+    <div className="space-y-3">
+      {sentences.map((sentence, idx) => (
+        <p key={idx} className={`leading-relaxed ${pClassName}`}>
+          {sentence}
+        </p>
+      ))}
+    </div>
+  );
+};
+
 export default function App() {
   const [activeCategory, setActiveCategory] = useState<string>('All');
-  const [activeModalItem, setActiveModalItem] = useState<PortfolioItem | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activePedestalTool, setActivePedestalTool] = useState<string>('tool-capcut');
 
@@ -58,40 +77,14 @@ export default function App() {
     return item.category === activeCategory;
   });
 
-  // Keyboard navigation for Lightbox Modal
+  // Lock body scroll when Mobile Menu is open
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (activeModalItem) {
-        if (e.key === 'Escape') {
-          setActiveModalItem(null);
-        } else if (e.key === 'ArrowRight') {
-          const currentIndex = filteredPortfolio.findIndex((item) => item.id === activeModalItem.id);
-          if (currentIndex !== -1) {
-            const nextIndex = (currentIndex + 1) % filteredPortfolio.length;
-            setActiveModalItem(filteredPortfolio[nextIndex]);
-          }
-        } else if (e.key === 'ArrowLeft') {
-          const currentIndex = filteredPortfolio.findIndex((item) => item.id === activeModalItem.id);
-          if (currentIndex !== -1) {
-            const prevIndex = (currentIndex - 1 + filteredPortfolio.length) % filteredPortfolio.length;
-            setActiveModalItem(filteredPortfolio[prevIndex]);
-          }
-        }
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [activeModalItem, filteredPortfolio]);
-
-  // Lock body scroll when Modal or Mobile Menu is open
-  useEffect(() => {
-    if (activeModalItem || mobileMenuOpen) {
+    if (mobileMenuOpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
     }
-  }, [activeModalItem, mobileMenuOpen]);
+  }, [mobileMenuOpen]);
 
   // Helper to resolve icon components safely
   const renderIcon = (name: string, className = "w-6 h-6") => {
@@ -435,9 +428,11 @@ export default function App() {
                     Fresher marketer & visual content creator based in Bangalore.
                   </h3>
 
-                  <div className="flex flex-col gap-5 text-base sm:text-lg text-[#CAD0E6] leading-relaxed max-w-2xl">
+                  <div className="flex flex-col gap-6 text-base sm:text-lg text-[#CAD0E6] max-w-2xl">
                     {ABOUT_CONTENT.bioParagraphs.map((para, idx) => (
-                      <p key={idx}>{para}</p>
+                      <div key={idx} className="p-4 rounded-[var(--radius)] bg-white/[0.03] border border-white/10">
+                        {renderClearSentences(para)}
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -459,9 +454,9 @@ export default function App() {
                       <h4 className="font-display text-lg font-bold text-white mb-2">
                         {tile.title}
                       </h4>
-                      <p className="text-sm text-[#CAD0E6] leading-relaxed">
-                        {tile.description}
-                      </p>
+                      <div className="text-sm text-[#CAD0E6]">
+                        {renderClearSentences(tile.description)}
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -648,85 +643,92 @@ export default function App() {
               ))}
             </div>
 
-            {/* Continuous Naturally Scrollable Feed of Projects (No Page Buttons) */}
-            <div className="flex flex-col gap-10 sm:gap-14">
-              {filteredPortfolio.map((item) => (
-                <article
-                  key={item.id}
-                  id={`project-${item.id}`}
-                  className="work-single-showcase p-6 sm:p-8 lg:p-10 border-2 border-white/15 hover:border-[#FF5C39]/50 transition-all shadow-[6px_6px_0_#1B1B1F]"
-                >
-                  {/* Project Top Meta Bar */}
-                  <div className="flex items-center justify-between gap-4 pb-5 mb-6 border-b border-white/10 text-xs">
-                    <span className="text-xs font-extrabold uppercase tracking-wider text-[#FF5C39] bg-[#FF5C39]/15 px-3 py-1 rounded-[var(--radius)] border border-[#FF5C39]/30">
-                      {item.category}
-                    </span>
+            {/* Continuous Naturally Scrollable Feed of Truly Floating 3D Projects */}
+            <div className="flex flex-col gap-12 sm:gap-16">
+              {filteredPortfolio.map((item, idx) => {
+                const floatDelay = `${(idx % 4) * 0.85}s`;
+                return (
+                  <article
+                    key={item.id}
+                    id={`project-${item.id}`}
+                    className="work-single-showcase p-7 sm:p-9 lg:p-11"
+                  >
+                    {/* Project Top Meta Bar */}
+                    <div className="flex items-center justify-between gap-4 pb-5 mb-8 border-b border-white/10 text-xs">
+                      <span className="text-xs font-extrabold uppercase tracking-wider text-[#FF5C39] bg-[#FF5C39]/15 px-3.5 py-1.5 rounded-[var(--radius)] border border-[#FF5C39]/30 shadow-[0_0_12px_rgba(255,92,57,0.2)]">
+                        {item.category}
+                      </span>
 
-                    <button
-                      onClick={() => setActiveModalItem(item)}
-                      className="flex items-center gap-1.5 text-xs font-bold text-[#D9F76B] hover:text-white transition-colors cursor-pointer"
-                    >
-                      <Maximize2 size={14} />
-                      <span>Enlarge Photo</span>
-                    </button>
-                  </div>
+                      <div className="flex items-center gap-2 text-xs font-mono font-bold text-[#9BA1BA]">
+                        <span className="text-[#00F0FF]">PROJECT</span> #{String(idx + 1).padStart(2, '0')}
+                      </div>
+                    </div>
 
-                  {/* Main Grid: Left = Clear Large Photo, Right = Case Study Dossier */}
-                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-stretch">
-                    
-                    {/* Photo Stage (7 Cols): Crisp, vivid, uncropped */}
-                    <div className="lg:col-span-7 flex flex-col justify-center">
-                      <div
-                        className="relative w-full min-h-[340px] sm:min-h-[440px] md:min-h-[500px] max-h-[620px] bg-[#14151B] rounded-[var(--radius)] overflow-hidden border border-white/15 flex items-center justify-center group cursor-pointer shadow-inner"
-                        onClick={() => setActiveModalItem(item)}
-                        title="Click to inspect in fullscreen lightbox"
-                      >
+                    {/* Main Grid: Left = 3D Floating Photo Stage, Right = Clear Case Study Dossier */}
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
+                      
+                      {/* Photo Stage (7 Cols): Real 3D Levitation Float with Floor Glow */}
+                      <div className="lg:col-span-7 flex flex-col justify-center relative">
+                        {/* Ambient Floor Glow beneath, pulsing in sync with float */}
+                        <div 
+                          className="floating-floor-glow" 
+                          style={{ animationDelay: floatDelay }}
+                        />
+
+                        {/* Real 3D Floating Stage with Smooth Levitation */}
+                        <div 
+                          className="floating-3d-stage relative w-full min-h-[350px] sm:min-h-[450px] md:min-h-[500px] max-h-[620px] rounded-[var(--radius)] overflow-hidden flex items-center justify-center p-4 sm:p-6 group cursor-default"
+                          style={{ animationDelay: floatDelay }}
+                        >
+                          {/* 3D Depth Lighting Sweep */}
+                          <div className="absolute inset-0 bg-gradient-to-tr from-white/[0.04] via-transparent to-black/30 pointer-events-none" />
+
                         <img
                           src={getImagePath(item.fileName)}
                           alt={item.title}
-                          className="w-full h-full max-h-[580px] object-contain vibrant-img transition-transform duration-300 group-hover:scale-[1.02]"
+                          className="w-full h-full max-h-[580px] object-contain vibrant-img transition-transform duration-500 group-hover:scale-[1.025]"
                           loading="lazy"
                         />
                       </div>
                     </div>
 
-                    {/* Case Study Breakdown (5 Cols) */}
-                    <div className="lg:col-span-5 flex flex-col justify-between">
+                    {/* Case Study Breakdown (5 Cols) - Clear Understandable Words & Sentence Gaps */}
+                    <div className="lg:col-span-5 flex flex-col justify-center">
                       <div>
                         {/* Title */}
                         <h3 className="font-display text-2xl sm:text-3xl font-extrabold text-white leading-tight mb-6">
                           {item.title}
                         </h3>
 
-                        {/* Structured Objective & Execution Blocks */}
-                        <div className="flex flex-col gap-4">
+                        {/* Structured Objective & Execution Blocks with Clear Sentence Gaps */}
+                        <div className="flex flex-col gap-5">
                           {/* 1. Creative Objective */}
-                          <div className="p-4 rounded-[var(--radius)] bg-white/5 border border-white/10">
-                            <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#FF5C39] block mb-1.5">
+                          <div className="p-5 rounded-[var(--radius)] bg-white/5 border border-white/10">
+                            <span className="text-[11px] font-black uppercase tracking-wider text-[#FF5C39] block mb-2.5">
                               Creative Objective
                             </span>
-                            <p className="text-sm text-[#E2E4EC] leading-relaxed">
-                              {item.goal}
-                            </p>
+                            <div className="text-sm">
+                              {renderClearSentences(item.goal)}
+                            </div>
                           </div>
 
                           {/* 2. What I Did */}
-                          <div className="p-4 rounded-[var(--radius)] bg-white/5 border border-white/10">
-                            <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#6C4CF1] block mb-1.5">
-                              What I Did
+                          <div className="p-5 rounded-[var(--radius)] bg-white/5 border border-white/10">
+                            <span className="text-[11px] font-black uppercase tracking-wider text-[#00F0FF] block mb-2.5">
+                              Execution & Workflow
                             </span>
-                            <p className="text-sm text-[#E2E4EC] leading-relaxed">
-                              {item.whatIDid}
-                            </p>
+                            <div className="text-sm">
+                              {renderClearSentences(item.whatIDid)}
+                            </div>
                           </div>
 
-                          {/* 3. Result - only rendered when custom result is provided */}
+                          {/* 3. Result - rendered when custom result is provided */}
                           {item.result && item.result !== "Add result here" && item.result !== "Add real result here" && (
                             <div className="p-4 rounded-[var(--radius)] bg-white/5 border border-white/10">
-                              <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#D9F76B] block mb-1.5">
-                                Result
+                              <span className="text-[11px] font-black uppercase tracking-wider text-[#D9F76B] block mb-1.5">
+                                Campaign Result
                               </span>
-                              <div className="text-xs font-bold px-3 py-1.5 rounded-[var(--radius)] bg-white text-[#1B1B1F] inline-block">
+                              <div className="text-xs font-bold px-3 py-1.5 rounded-[var(--radius)] bg-white text-[#08090E] inline-block shadow-md">
                                 {item.result}
                               </div>
                             </div>
@@ -734,23 +736,13 @@ export default function App() {
                         </div>
                       </div>
 
-                      {/* Bottom Clean Action */}
-                      <div className="pt-6 mt-6 border-t border-white/10 flex items-center justify-end">
-                        <button
-                          onClick={() => setActiveModalItem(item)}
-                          className="flex items-center gap-2 px-4 py-2.5 rounded-[var(--radius)] bg-white/10 hover:bg-[#FF5C39] text-white text-xs font-bold border border-white/20 transition-all cursor-pointer"
-                        >
-                          <Maximize2 size={14} />
-                          <span>View Fullscreen</span>
-                        </button>
-                      </div>
-
                     </div>
 
                   </div>
 
-                </article>
-              ))}
+                  </article>
+                );
+              })}
             </div>
 
           </div>
@@ -840,7 +832,7 @@ export default function App() {
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch relative z-10">
                 
                 {/* 3D Stepped Pedestals Image Stage (6 Cols) */}
-                <div className="lg:col-span-6 flex flex-col justify-between">
+                <div className="lg:col-span-6 flex flex-col justify-between relative">
                   <div>
                     <h3 className="font-display text-2xl sm:text-3xl font-extrabold text-white leading-tight mb-4">
                       {CREATIVE_TOOLS_CONTENT.titleLead}
@@ -849,52 +841,39 @@ export default function App() {
                       </span>
                     </h3>
 
-                    <p className="text-sm sm:text-base text-[#CAD0E6] leading-relaxed mb-6">
-                      {CREATIVE_TOOLS_CONTENT.subline}
-                    </p>
+                    <div className="text-sm sm:text-base text-[#CAD0E6] mb-6">
+                      {renderClearSentences(CREATIVE_TOOLS_CONTENT.subline)}
+                    </div>
                   </div>
 
-                  {/* 3D Visual Box */}
-                  <div
-                    className="relative w-full h-[280px] sm:h-[340px] md:h-[380px] rounded-[var(--radius)] overflow-hidden border border-white/20 group cursor-pointer shadow-2xl bg-[#08090E] mt-2"
-                    onClick={() => setActiveModalItem({
-                      id: 'stepped-tools-pedestals',
-                      title: '3D Stepped Pedestals · Creative & Editing Stack',
-                      category: 'Branding',
-                      fileName: CREATIVE_TOOLS_CONTENT.image,
-                      goal: 'Establish an isometric 3D production pipeline where each editing tool occupies a glowing stepped pedestal for video, design, moodboarding, and publishing.',
-                      whatIDid: 'Engineered layered creative pipelines integrating CapCut for pacing, Canva for carousels, Pinterest for visual trend discovery, and Photoshop for precision color balance.',
-                      result: 'Cohesive multi-platform content with 3x faster turnaround and unified brand aesthetic'
-                    })}
-                    title="Click to view full 3D stepped pedestals in lightbox"
-                  >
-                    <img
-                      src={CREATIVE_TOOLS_CONTENT.image}
-                      alt="3D Stepped Pedestals for Creative Tools"
-                      className="w-full h-full object-cover vibrant-img transition-transform duration-500 group-hover:scale-105"
-                      loading="lazy"
-                    />
+                  {/* 3D Floating Visual Stage with Floor Glow */}
+                  <div className="relative w-full mt-2">
+                    <div className="floating-floor-glow" />
 
-                    {/* Gradient Overlay for Sleek Look */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#08090E]/90 via-transparent to-transparent pointer-events-none" />
+                    <div className="floating-3d-stage relative w-full h-[300px] sm:h-[360px] md:h-[400px] rounded-[var(--radius)] overflow-hidden group shadow-2xl">
+                      <img
+                        src={CREATIVE_TOOLS_CONTENT.image}
+                        alt="3D Stepped Pedestals for Creative Tools"
+                        className="w-full h-full object-cover vibrant-img transition-transform duration-700 group-hover:scale-[1.03]"
+                        loading="lazy"
+                      />
 
-                    {/* Badge at Bottom */}
-                    <div className="absolute bottom-4 inset-x-4 flex items-center justify-between">
-                      <span className="px-3 py-1.5 rounded-[var(--radius)] bg-[#0C0F1B]/90 text-white text-xs font-bold border border-white/20 backdrop-blur-md flex items-center gap-1.5">
-                        <span className="w-2 h-2 rounded-full bg-[#00F0FF] animate-pulse" />
-                        <span>Interactive Pedestal Stack</span>
-                      </span>
+                      {/* Gradient Overlay for Sleek Look */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#08090E]/90 via-transparent to-transparent pointer-events-none" />
 
-                      <span className="px-3 py-1.5 rounded-[var(--radius)] bg-white/15 group-hover:bg-[#00F0FF] group-hover:text-[#08090E] text-white text-xs font-bold border border-white/20 transition-all flex items-center gap-1">
-                        <Maximize2 size={13} />
-                        <span>Enlarge 3D View</span>
-                      </span>
+                      {/* Bottom Status Tag */}
+                      <div className="absolute bottom-4 left-4">
+                        <span className="px-3 py-1.5 rounded-[var(--radius)] bg-[#0C0F1B]/90 text-white text-xs font-bold border border-white/20 backdrop-blur-md flex items-center gap-1.5 shadow-md">
+                          <span className="w-2 h-2 rounded-full bg-[#00F0FF] animate-pulse shadow-[0_0_8px_#00F0FF]" />
+                          <span>Interactive Pedestal Stack</span>
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
 
                 {/* Right: Stepped Tool Cards (6 Cols) */}
-                <div className="lg:col-span-6 flex flex-col gap-3.5 justify-center">
+                <div className="lg:col-span-6 flex flex-col gap-4 justify-center">
                   {CREATIVE_TOOLS_CONTENT.tools.map((tool) => {
                     const isActive = activePedestalTool === tool.id;
                     return (
@@ -947,10 +926,10 @@ export default function App() {
                           </span>
                         </div>
 
-                        {/* Description */}
-                        <p className="text-xs text-[#CAD0E6] leading-relaxed mb-3">
-                          {tool.description}
-                        </p>
+                        {/* Description with clear sentence gaps */}
+                        <div className="text-xs text-[#CAD0E6] mb-3">
+                          {renderClearSentences(tool.description)}
+                        </div>
 
                         {/* Workflows Chips */}
                         <div className="flex flex-wrap gap-1.5 pt-2.5 border-t border-white/10">
@@ -997,20 +976,10 @@ export default function App() {
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch relative z-10">
                 
                 {/* 3D AI Workstation Image Stage (7 Cols) */}
-                <div className="lg:col-span-7 flex flex-col justify-center">
-                  <div
-                    className="relative w-full h-[320px] sm:h-[400px] md:h-[440px] rounded-[var(--radius)] overflow-hidden border border-white/15 group cursor-pointer shadow-2xl bg-[#090A0D]"
-                    onClick={() => setActiveModalItem({
-                      id: 'ai-workstation',
-                      title: 'AI Creative Workstation & Image Retouching Suite',
-                      category: 'Photography',
-                      fileName: AI_WORKFLOW_CONTENT.image,
-                      goal: 'Harnessing generative AI tools for photo background expansion, complex texture retouching, and viral hook drafting.',
-                      whatIDid: 'Engineered multi-turn prompts across Claude and ChatGPT for campaign scripts; conducted generative fill and composition editing via Photoshop AI and Midjourney.',
-                      result: 'Accelerated creative ideation by 3x while maintaining consistent aesthetic polish'
-                    })}
-                    title="Click to view full illustration in lightbox"
-                  >
+                <div className="lg:col-span-7 flex flex-col justify-center relative">
+                  <div className="floating-floor-glow" />
+
+                  <div className="floating-3d-stage relative w-full h-[320px] sm:h-[400px] md:h-[440px] rounded-[var(--radius)] overflow-hidden group shadow-2xl">
                     <img
                       src={AI_WORKFLOW_CONTENT.image}
                       alt="AI Creative Editing Workstation"
@@ -1021,16 +990,11 @@ export default function App() {
                     {/* Gradient Overlay for Sleek Look */}
                     <div className="absolute inset-0 bg-gradient-to-t from-[#090A0D]/90 via-transparent to-transparent pointer-events-none" />
 
-                    {/* Badge at Bottom */}
-                    <div className="absolute bottom-4 inset-x-4 flex items-center justify-between">
-                      <span className="px-3 py-1.5 rounded-[var(--radius)] bg-[#08090E]/90 text-white text-xs font-bold border border-white/20 backdrop-blur-md flex items-center gap-1.5">
+                    {/* Studio Label at Bottom */}
+                    <div className="absolute bottom-4 left-4">
+                      <span className="px-3 py-1.5 rounded-[var(--radius)] bg-[#08090E]/90 text-white text-xs font-bold border border-white/20 backdrop-blur-md flex items-center gap-1.5 shadow-md">
                         <span className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse" />
                         <span>Chai & Pixels · Creative Studio</span>
-                      </span>
-
-                      <span className="px-3 py-1.5 rounded-[var(--radius)] bg-white/15 group-hover:bg-[#FF5C39] text-white text-xs font-bold border border-white/20 transition-all flex items-center gap-1">
-                        <Maximize2 size={13} />
-                        <span>Enlarge</span>
                       </span>
                     </div>
                   </div>
@@ -1046,9 +1010,9 @@ export default function App() {
                       </span>
                     </h3>
 
-                    <p className="text-sm sm:text-base text-[#CAD0E6] leading-relaxed mb-6">
-                      {AI_WORKFLOW_CONTENT.subline}
-                    </p>
+                    <div className="text-sm sm:text-base text-[#CAD0E6] mb-6">
+                      {renderClearSentences(AI_WORKFLOW_CONTENT.subline)}
+                    </div>
 
                     {/* AI Tool Badges with Official Symbols */}
                     <div className="mb-6">
@@ -1070,16 +1034,16 @@ export default function App() {
                     </div>
 
                     {/* 3 Core Applied Workflows */}
-                    <div className="flex flex-col gap-3">
+                    <div className="flex flex-col gap-3.5">
                       {AI_WORKFLOW_CONTENT.capabilities.map((cap, i) => (
                         <div key={i} className="p-4 rounded-[var(--radius)] bg-white/5 border border-white/10">
-                          <h4 className="text-xs font-extrabold text-white mb-1.5 flex items-center gap-2">
+                          <h4 className="text-xs font-extrabold text-white mb-2 flex items-center gap-2">
                             <span className="w-1.5 h-1.5 rounded-full bg-[#FF5C39]" />
                             <span>{cap.title}</span>
                           </h4>
-                          <p className="text-xs text-[#CAD0E6] leading-relaxed">
-                            {cap.description}
-                          </p>
+                          <div className="text-xs text-[#CAD0E6]">
+                            {renderClearSentences(cap.description)}
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -1212,125 +1176,7 @@ export default function App() {
         </section>
       </main>
 
-      {/* ==========================================================================
-           CASE STUDY & 3D LIGHTBOX MODAL (Sleek 3D Dark Theme)
-           ========================================================================== */}
-      {activeModalItem && (
-        <div
-          className="fixed inset-0 z-50 bg-[#08090E]/95 backdrop-blur-xl flex items-center justify-center p-4 sm:p-6"
-          role="dialog"
-          aria-modal="true"
-          onClick={() => setActiveModalItem(null)}
-        >
-          <div
-            className="relative w-full max-w-4xl max-h-[92vh] flex flex-col bg-[#0E111E] rounded-[var(--radius)] border-2 border-white/20 shadow-[0_25px_70px_rgba(0,0,0,0.9),0_0_30px_rgba(0,240,255,0.2)] overflow-hidden"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Modal Header */}
-            <div className="p-4 sm:p-5 border-b border-white/10 flex items-center justify-between gap-4 bg-[#141829]">
-              <div>
-                <span className="text-xs font-extrabold uppercase tracking-wider text-[#FF5C39] block">
-                  {activeModalItem.category}
-                </span>
-                <h3 className="font-display text-lg sm:text-xl font-bold text-white">
-                  {activeModalItem.title}
-                </h3>
-              </div>
 
-              {/* Close Button with 6px radius */}
-              <button
-                onClick={() => setActiveModalItem(null)}
-                className="w-10 h-10 rounded-[var(--radius)] bg-white/10 border border-white/20 hover:border-[#FF5C39] hover:bg-[#FF5C39] text-white flex items-center justify-center transition-all cursor-pointer shrink-0"
-                aria-label="Close modal"
-              >
-                <X size={20} />
-              </button>
-            </div>
-
-            {/* Modal Content */}
-            <div className="overflow-y-auto p-4 sm:p-6 flex flex-col gap-6">
-              {/* Full Image */}
-              <div className="w-full max-h-[65vh] flex items-center justify-center rounded-[var(--radius)] bg-[#08090E] overflow-hidden border border-white/10">
-                <img
-                  src={getImagePath(activeModalItem.fileName)}
-                  alt={activeModalItem.title}
-                  className="max-h-[65vh] w-auto max-w-full object-contain vibrant-img"
-                />
-              </div>
-
-              {/* Labeled Lines: Goal, What I did, and Result */}
-              <div className={`grid grid-cols-1 ${activeModalItem.result && activeModalItem.result !== "Add result here" && activeModalItem.result !== "Add real result here" ? "md:grid-cols-3" : "md:grid-cols-2"} gap-4 p-5 rounded-[var(--radius)] bg-[#141829] border border-white/10`}>
-                {/* 1. Goal */}
-                <div>
-                  <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#FF5C39] block mb-1">
-                    Goal / Objective
-                  </span>
-                  <p className="text-sm text-[#CAD0E6] leading-relaxed">
-                    {activeModalItem.goal}
-                  </p>
-                </div>
-
-                {/* 2. What I did */}
-                <div>
-                  <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#00F0FF] block mb-1">
-                    Execution
-                  </span>
-                  <p className="text-sm text-[#CAD0E6] leading-relaxed">
-                    {activeModalItem.whatIDid}
-                  </p>
-                </div>
-
-                {/* 3. Result */}
-                {activeModalItem.result && activeModalItem.result !== "Add result here" && activeModalItem.result !== "Add real result here" && (
-                  <div>
-                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#D9F76B] block mb-1">
-                      Result
-                    </span>
-                    <div className="text-xs font-bold px-3 py-1.5 rounded-[var(--radius)] bg-white text-[#08090E] inline-block">
-                      {activeModalItem.result}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Modal Footer Controls */}
-            <div className="p-4 sm:p-5 border-t border-white/10 flex items-center justify-between text-xs text-[#9BA1BA] bg-[#141829]">
-              <button
-                onClick={() => {
-                  const currentIndex = filteredPortfolio.findIndex((item) => item.id === activeModalItem.id);
-                  if (currentIndex !== -1) {
-                    const prevIndex = (currentIndex - 1 + filteredPortfolio.length) % filteredPortfolio.length;
-                    setActiveModalItem(filteredPortfolio[prevIndex]);
-                  }
-                }}
-                className="flex items-center gap-1.5 px-3.5 py-2 rounded-[var(--radius)] bg-white/10 border border-white/20 hover:border-[#00F0FF] text-white font-bold transition-all cursor-pointer"
-              >
-                <ArrowLeft size={16} />
-                Previous
-              </button>
-
-              <span className="font-semibold text-white/70">
-                {filteredPortfolio.findIndex((item) => item.id === activeModalItem.id) + 1} of {filteredPortfolio.length}
-              </span>
-
-              <button
-                onClick={() => {
-                  const currentIndex = filteredPortfolio.findIndex((item) => item.id === activeModalItem.id);
-                  if (currentIndex !== -1) {
-                    const nextIndex = (currentIndex + 1) % filteredPortfolio.length;
-                    setActiveModalItem(filteredPortfolio[nextIndex]);
-                  }
-                }}
-                className="flex items-center gap-1.5 px-3.5 py-2 rounded-[var(--radius)] bg-white/10 border border-white/20 hover:border-[#00F0FF] text-white font-bold transition-all cursor-pointer"
-              >
-                Next
-                <ArrowRight size={16} />
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* ==========================================================================
            3D THEMED FOOTER
